@@ -3114,12 +3114,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      * updates.
      */
     private void crossFadeWithPreviousAppearance() {
-        final NonConfigInstance lastInstance;
-        if (getLastNonConfigurationInstance() instanceof NonConfigInstance) {
-            lastInstance = (NonConfigInstance) getLastNonConfigurationInstance();
-        } else {
-            lastInstance = null;
-        }
+        NonConfigInstance lastInstance = (NonConfigInstance) getLastNonConfigurationInstance();
 
         if (lastInstance == null || lastInstance.snapshot == null) {
             return;
