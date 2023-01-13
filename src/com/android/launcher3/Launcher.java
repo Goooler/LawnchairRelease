@@ -1196,7 +1196,12 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         LauncherState[] stateValues = LauncherState.values();
         LauncherState state = stateValues[stateOrdinal];
 
-        NonConfigInstance lastInstance = (NonConfigInstance) getLastNonConfigurationInstance();
+        final NonConfigInstance lastInstance;
+        if (getLastNonConfigurationInstance() instanceof NonConfigInstance) {
+            lastInstance = (NonConfigInstance) getLastNonConfigurationInstance();
+        } else {
+            lastInstance = null;
+        }
         boolean forceRestore = lastInstance != null
                 && (lastInstance.config.diff(mOldConfig) & CONFIG_UI_MODE) != 0;
         if (forceRestore || !state.shouldDisableRestore()) {
