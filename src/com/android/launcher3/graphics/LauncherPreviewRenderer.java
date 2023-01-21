@@ -29,7 +29,7 @@ import static com.android.launcher3.model.ModelUtils.getMissingHotseatRanks;
 import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially;
 
 import android.annotation.TargetApi;
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.app.WallpaperColors;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHost;
