@@ -70,7 +70,7 @@ allprojects {
                 def originalFiles = [] + it.libraries.files
                 def newFiles = []
                 originalFiles.each { file ->
-                    newFiles.add(file.path.endsWith('android.jar') ? frameworkJar : file)
+                    newFiles.add(file.name == 'android.jar' ? frameworkJar : file)
                 }
                 // Clear the list of files
                 it.libraries.setFrom(files([]))
