@@ -59,6 +59,25 @@ allprojects {
             }
         }
     }
+
+    ext.replaceFrameworkJar = { String name ->
+        def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
+        if (!frameworkJar.exists()) {
+            throw new IllegalArgumentException("Framework jar path ${frameworkJar.path} doesn't exist")
+        }
+        gradle.projectsEvaluated {
+            tasks.withType(KotlinCompile).configureEach {
+                def originalFiles = [] + it.libraries.files
+                def newFiles = []
+                originalFiles.each { file ->
+                    newFiles.add(file.path.endsWith('android.jar') ? frameworkJar : file)
+                }
+                // Clear the list of files
+                it.libraries.setFrom(files([]))
+                it.libraries.from(files(newFiles))
+            }
+        }
+    }
 }
 
 // todo remove ext block after migrating to version catalog
