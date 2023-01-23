@@ -18,7 +18,6 @@ package app.lawnchair
 import android.app.WallpaperColors
 import android.content.Context
 import android.graphics.Rect
-import android.graphics.RectF
 import android.os.Build
 import android.util.SparseIntArray
 import android.view.View
@@ -35,31 +34,18 @@ import dev.kdrag0n.monet.theme.ColorScheme
 @RequiresApi(api = Build.VERSION_CODES.S)
 class AccentColorExtractor @Keep constructor(context: Context?) : LocalColorExtractor(),
     ColorSchemeChangeListener {
-    private val mThemeProvider: ThemeProvider
-    private val mTmpRect = RectF()
-    private var mListener: Listener? = null
+    private val themeProvider = ThemeProvider.INSTANCE[context]
+    private var listener: Listener? = null
+
     override fun setListener(listener: Listener?) {
-        mListener = listener
+        this.listener = listener
         notifyListener()
     }
 
-    override fun setWorkspaceLocation(pos: Rect, child: View, screenId: Int) {}
-    protected fun generateColorsOverride(colorScheme: ColorScheme): SparseIntArray? {
-        val colorRes = SparseIntArray(5 * 13)
-        addColorsToArray(colorScheme.accent1, ACCENT1_RES, colorRes)
-        addColorsToArray(colorScheme.accent2, ACCENT2_RES, colorRes)
-        addColorsToArray(colorScheme.accent3, ACCENT3_RES, colorRes)
-        addColorsToArray(colorScheme.neutral1, NEUTRAL1_RES, colorRes)
-        addColorsToArray(colorScheme.neutral2, NEUTRAL2_RES, colorRes)
-        return colorRes
-    }
+    override fun setWorkspaceLocation(pos: Rect, child: View, screenId: Int) = Unit
 
     override fun applyColorsOverride(base: Context, colors: WallpaperColors) {
-        val res: RemoteViews.ColorResources =
-            RemoteViews.ColorResources.create(base, generateColorsOverride(colors))
-        if (res != null) {
-            res.apply(base)
-        }
+        RemoteViews.ColorResources.create(base, generateColorsOverride(colors))?.apply(base)
     }
 
     override fun onColorSchemeChanged() {
@@ -67,13 +53,17 @@ class AccentColorExtractor @Keep constructor(context: Context?) : LocalColorExtr
     }
 
     private fun notifyListener() {
-        if (mListener != null) {
-            mListener!!.onColorsChanged(generateColorsOverride(mThemeProvider.colorScheme))
-        }
+        listener?.onColorsChanged(generateColorsOverride(themeProvider.colorScheme))
     }
 
-    init {
-        mThemeProvider = ThemeProvider.INSTANCE[context]
+    private fun generateColorsOverride(colorScheme: ColorScheme): SparseIntArray {
+        return SparseIntArray(5 * 13).apply {
+            addColorsToArray(colorScheme.accent1, ACCENT1_RES)
+            addColorsToArray(colorScheme.accent2, ACCENT2_RES)
+            addColorsToArray(colorScheme.accent3, ACCENT3_RES)
+            addColorsToArray(colorScheme.neutral1, NEUTRAL1_RES)
+            addColorsToArray(colorScheme.neutral2, NEUTRAL2_RES)
+        }
     }
 
     companion object {
@@ -152,15 +142,15 @@ class AccentColorExtractor @Keep constructor(context: Context?) : LocalColorExtr
             NEUTRAL2_RES.put(1000, android.R.color.system_neutral2_1000)
         }
 
-        private fun addColorsToArray(
+        private fun SparseIntArray.addColorsToArray(
             swatch: Map<Int, Color>,
-            resMap: SparseIntArray, array: SparseIntArray
+            resMap: SparseIntArray
         ) {
-            for ((shade, value) in swatch) {
+            swatch.forEach { (shade, value) ->
                 val resId = resMap[shade, -1]
                 if (resId != -1) {
                     val (color1) = value as AndroidColor
-                    array.put(resId, color1)
+                    put(resId, color1)
                 }
             }
         }
