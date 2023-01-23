@@ -46,10 +46,7 @@ allprojects {
     }
 
     ext.addFrameworkJar = { String name ->
-        def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
-        if (!frameworkJar.exists()) {
-            throw new IllegalArgumentException("Framework jar path ${frameworkJar.path} doesn't exist")
-        }
+        def frameworkJar = getFrameworkJar(name)
         gradle.projectsEvaluated {
             tasks.withType(JavaCompile).configureEach {
                 options.bootstrapClasspath = files(frameworkJar, options.bootstrapClasspath)
@@ -61,10 +58,7 @@ allprojects {
     }
 
     ext.replaceFrameworkJar = { String name ->
-        def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
-        if (!frameworkJar.exists()) {
-            throw new IllegalArgumentException("Framework jar path ${frameworkJar.path} doesn't exist")
-        }
+        def frameworkJar = getFrameworkJar(name)
         gradle.projectsEvaluated {
             tasks.withType(KotlinCompile).configureEach {
                 def originalFiles = [] + it.libraries.files
@@ -88,6 +82,14 @@ ext {
     protocVersion = '3.21.12'
     room_version = '2.5.0'
     optoVersion = "1.0.18"
+}
+
+def getFrameworkJar(String name) {
+    def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
+    if (!frameworkJar.exists()) {
+        throw new IllegalArgumentException("Framework jar path ${frameworkJar.path} doesn't exist")
+    }
+    return frameworkJar
 }
 
 final def buildCommit = providers.exec {
