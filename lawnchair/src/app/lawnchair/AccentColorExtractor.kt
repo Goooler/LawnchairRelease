@@ -31,6 +31,7 @@ import com.android.launcher3.widget.LocalColorExtractor
 import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.monet.theme.ColorScheme
 
+@Suppress("unused") // See lawnchair/res/values-v31/config.xml#L3
 @RequiresApi(api = Build.VERSION_CODES.S)
 class AccentColorExtractor @Keep constructor(context: Context?) : LocalColorExtractor(),
     ColorSchemeChangeListener {
