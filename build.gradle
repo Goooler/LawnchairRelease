@@ -7,7 +7,7 @@ plugins {
     id 'org.jetbrains.kotlin.android' version "1.8.0"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.8.0"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.8.0"
-    id "com.google.devtools.ksp" version "1.8.0-1.0.8"
+    id "com.google.devtools.ksp" version "1.8.0-1.0.9"
     id 'com.google.protobuf' version "0.9.1"
     id 'com.google.android.gms.oss-licenses-plugin' version "0.10.6"
     id 'dev.rikka.tools.refine' version "3.1.1"
@@ -338,7 +338,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-pager:$accompanist_version"
     implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
-    implementation "com.google.android.material:material:1.7.0"
+    implementation "com.google.android.material:material:1.8.0"
     implementation "io.github.fornewid:material-motion-compose-core:0.10.4"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
     implementation 'io.coil-kt:coil-compose:2.2.2'
