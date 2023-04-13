@@ -46,3 +46,21 @@ jobs:
           path: |
             build/outputs/apk/lawnWithQuickstep/release/*.apk
             build/outputs/mapping/lawnWithQuickstepRelease/mapping.txt
+
+  gradle-dependency-submission:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 17
+      - uses: gradle/gradle-build-action@v2
+        with:
+          gradle-home-cache-cleanup: true
+      - uses: mikepenz/gradle-dependency-submission@v1
+        with:
+          gradle-build-configuration: 'lawnWithQuickstepSmsReleaseRuntimeClasspath'
