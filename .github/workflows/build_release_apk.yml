@@ -49,6 +49,7 @@ jobs:
 
   gradle-dependency-submission:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/release'
     permissions:
       contents: write
     steps:
