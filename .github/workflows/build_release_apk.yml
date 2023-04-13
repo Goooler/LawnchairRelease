@@ -63,4 +63,4 @@ jobs:
           gradle-home-cache-cleanup: true
       - uses: mikepenz/gradle-dependency-submission@v1
         with:
-          gradle-build-configuration: 'lawnWithQuickstepSmsReleaseRuntimeClasspath'
+          gradle-build-configuration: 'lawnWithQuickstepReleaseRuntimeClasspath'
