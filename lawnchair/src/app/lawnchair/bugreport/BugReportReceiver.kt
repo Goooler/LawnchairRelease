@@ -116,7 +116,7 @@ class BugReportReceiver : BroadcastReceiver() {
             if (uploading) {
                 builder.setOngoing(true)
                 builder.setProgress(0, 0, true)
-            } else if (report.link == null && UploaderUtils.isAvailable) {
+            } else if (report.link == null) {
                 val uploadIntent = Intent(UPLOAD_ACTION)
                     .setPackage(BuildConfig.APPLICATION_ID)
                     .putExtra("report", report)
