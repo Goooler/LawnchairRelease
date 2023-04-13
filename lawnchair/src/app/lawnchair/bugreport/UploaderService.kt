@@ -7,13 +7,10 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.android.launcher3.R
-import kotlinx.coroutines.*
-import java.util.*
+import java.util.LinkedList
+import java.util.Queue
 
 class UploaderService : Service() {
-
-    private var job: Job? = null
-    private val scope = CoroutineScope(Dispatchers.IO) + CoroutineName("UploaderService")
     private val uploadQueue: Queue<BugReport> = LinkedList()
 
     override fun onBind(intent: Intent): IBinder {
@@ -23,16 +20,12 @@ class UploaderService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent == null) return START_REDELIVER_INTENT
         uploadQueue.offer(intent.getParcelableExtra("report"))
-        if (job == null) {
-            job = scope.launch {
-                startUpload()
-                stopSelf()
-            }
-        }
+        sendBroadcasts()
+        stopSelf()
         return START_STICKY
     }
 
-    private fun startUpload() {
+    private fun sendBroadcasts() {
         while (uploadQueue.isNotEmpty()) {
             val report = uploadQueue.poll()!!
             sendBroadcast(
@@ -54,10 +47,5 @@ class UploaderService : Service() {
             .setColor(ContextCompat.getColor(this, R.color.bugNotificationColor))
             .setPriority(NotificationCompat.PRIORITY_MIN)
             .build())
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job?.cancel()
     }
 }
