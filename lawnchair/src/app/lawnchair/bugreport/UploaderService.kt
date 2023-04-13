@@ -32,7 +32,7 @@ class UploaderService : Service() {
         return START_STICKY
     }
 
-    private suspend fun startUpload() = withContext(Dispatchers.IO) {
+    private fun startUpload() {
         while (uploadQueue.isNotEmpty()) {
             val report = uploadQueue.poll()!!
             sendBroadcast(
