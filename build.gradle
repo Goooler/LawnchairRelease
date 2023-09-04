@@ -23,7 +23,7 @@ allprojects {
             compileSdk 34
             defaultConfig {
                 minSdk 26
-                targetSdk 32
+                targetSdk 33
                 vectorDrawables.useSupportLibrary = true
             }
             // Can remove this once https://issuetracker.google.com/issues/260059413 is fixed.
@@ -300,7 +300,7 @@ android {
         }
     }
 
-    addFrameworkJar('framework-12l.jar')
+    addFrameworkJar('framework-13.jar')
 }
 
 dependencies {
