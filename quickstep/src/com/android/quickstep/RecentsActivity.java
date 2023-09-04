@@ -278,7 +278,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
                 ActivityOptionsCompat.makeRemoteAnimation(adapterCompat),
                 onEndCallback);
         if (Utilities.ATLEAST_S) {
-            activityOptions.options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+            activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
         }
         mHandler.postDelayed(mAnimationStartTimeoutRunnable, RECENTS_ANIMATION_TIMEOUT);
         return activityOptions;

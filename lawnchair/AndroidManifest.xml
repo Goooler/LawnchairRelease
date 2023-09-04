@@ -22,6 +22,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.QSB" />
 
     <permission
@@ -58,11 +59,18 @@
 
         <activity
             android:name="app.lawnchair.BlankActivity"
+            android:exported="false"
             android:theme="@style/Theme.Transparent" />
 
         <activity
             android:name="app.lawnchair.smartspace.SmartspacePreferencesShortcut"
+            android:exported="false"
             android:theme="@style/Theme.Transparent" />
+
+        <activity android:name="androidx.slice.compat.SlicePermissionActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            tools:node="replace" />
 
         <receiver
             android:name="app.lawnchair.gestures.handlers.SleepMethodDeviceAdmin$SleepDeviceAdmin"
@@ -132,5 +140,10 @@
         <meta-data
             android:name="xyz.paphonb.quickstepswitcher.maxSdk"
             android:value="${quickstepMaxSdk}" />
+
+        <provider
+            android:name="org.chickenhook.restrictionbypass.BypassProvider"
+            android:authorities="${applicationId}.restrictionbypass"
+            tools:node="remove"/>
     </application>
 </manifest>

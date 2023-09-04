@@ -26,6 +26,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo.REQUESTED_PERMISSION_GRANTED
 import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.net.Uri
@@ -46,6 +47,7 @@ import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.QuickStepContract
 import com.patrykmichalik.opto.core.firstBlocking
+import kotlinx.serialization.json.Json
 import org.json.JSONArray
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -142,6 +144,10 @@ fun <T> JSONArray.toArrayList(): ArrayList<T> {
     return arrayList
 }
 
+val kotlinxJson = Json {
+    ignoreUnknownKeys = true
+}
+
 val ViewGroup.recursiveChildren: Sequence<View>
     get() = children.flatMap {
         if (it is ViewGroup) {
@@ -232,4 +238,14 @@ fun Size.scaleDownTo(maxSize: Int): Size {
 
         else -> this
     }
+}
+
+fun Context.isDefaultLauncher(): Boolean = getDefaultLauncherPackageName() == packageName
+
+fun Context.getDefaultLauncherPackageName(): String? =
+    runCatching { getDefaultResolveInfo()?.activityInfo?.packageName }.getOrNull()
+
+fun Context.getDefaultResolveInfo(): ResolveInfo? {
+    val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+    return packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
 }

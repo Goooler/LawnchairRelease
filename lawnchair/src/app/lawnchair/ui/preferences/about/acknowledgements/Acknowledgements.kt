@@ -17,7 +17,6 @@
 package app.lawnchair.ui.preferences.about.acknowledgements
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,20 +34,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import app.lawnchair.ossnotices.OssLibrary
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.R
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.placeholder.PlaceholderHighlight
-import com.google.accompanist.placeholder.material.fade
-import com.google.accompanist.placeholder.material.placeholder
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.licensesGraph(route: String) {
     preferenceGraph(route, { Acknowledgements() }) { subRoute ->
         composable(
@@ -103,48 +97,35 @@ fun NoticePage(index: Int) {
     PreferenceLayout(
         label = ossLibrary?.name ?: stringResource(id = R.string.loading)
     ) {
-        Crossfade(targetState = data) { it ->
-            if (it != null) {
-                val uriHandler = LocalUriHandler.current
-                val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
-                val pressIndicator = Modifier.pointerInput(Unit) {
-                    detectTapGestures { pos ->
-                        layoutResult.value?.let { layoutResult ->
-                            val position = layoutResult.getOffsetForPosition(pos)
-                            val annotation =
-                                it.notice.getStringAnnotations(position, position).firstOrNull()
-                            if (annotation?.tag == "URL") {
-                                uriHandler.openUri(annotation.item)
-                            }
+        Crossfade(targetState = data, label = "") { it ->
+            it ?: return@Crossfade
+            val uriHandler = LocalUriHandler.current
+            val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
+            val pressIndicator = Modifier.pointerInput(Unit) {
+                detectTapGestures { pos ->
+                    layoutResult.value?.let { layoutResult ->
+                        val position = layoutResult.getOffsetForPosition(pos)
+                        val annotation =
+                            it.notice.getStringAnnotations(position, position).firstOrNull()
+                        if (annotation?.tag == "URL") {
+                            uriHandler.openUri(annotation.item)
                         }
                     }
                 }
-
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
-                        .then(pressIndicator),
-                    text = it.notice,
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 14.sp,
-                    onTextLayout = {
-                        layoutResult.value = it
-                    }
-                )
-            } else {
-                Text(
-                    modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
-                        .placeholder(
-                            visible = true,
-                            highlight = PlaceholderHighlight.fade(),
-                        ),
-                    text = "a".repeat(ossLibrary?.noticeLength ?: 20),
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 14.sp
-                )
             }
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+                    .then(pressIndicator),
+                text = it.notice,
+                fontFamily = FontFamily.Monospace,
+                fontSize = 14.sp,
+                onTextLayout = {
+                    layoutResult.value = it
+                }
+            )
         }
     }
 }

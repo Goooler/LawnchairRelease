@@ -1,25 +1,29 @@
-import com.android.build.gradle.BasePlugin
+import com.android.build.gradle.api.AndroidBasePlugin
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "7.4.0"
-    id 'com.android.library' version "7.4.0" apply false
-    id 'org.jetbrains.kotlin.android' version "1.8.0"
-    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.8.0"
-    id 'org.jetbrains.kotlin.plugin.serialization' version "1.8.0"
-    id "com.google.devtools.ksp" version "1.8.0-1.0.9"
-    id 'com.google.protobuf' version "0.9.1"
-    id 'com.google.android.gms.oss-licenses-plugin' version "0.10.6"
-    id 'dev.rikka.tools.refine' version "3.1.1"
+    id 'com.android.application' version "8.1.1"
+    id 'com.android.library' version "8.1.1" apply false
+    id 'org.jetbrains.kotlin.android' version "1.9.10"
+    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.10"
+    id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.10"
+    id "com.google.devtools.ksp" version "1.9.10-1.0.13"
+    id 'com.google.protobuf' version "0.9.4"
+    id 'app.cash.licensee' version "1.7.0"
+    id 'dev.rikka.tools.refine' version "4.3.0"
+    id 'org.gradle.android.cache-fix' version '2.7.3'
 }
 
 allprojects {
-    plugins.withType(BasePlugin).configureEach {
+    plugins.withType(AndroidBasePlugin).configureEach {
+        apply plugin: 'org.gradle.android.cache-fix'
+
         project.android {
-            compileSdk 33
+            compileSdk 34
             defaultConfig {
                 minSdk 26
-                targetSdk 32
+                targetSdk 33
                 vectorDrawables.useSupportLibrary = true
             }
             // Can remove this once https://issuetracker.google.com/issues/260059413 is fixed.
@@ -34,15 +38,13 @@ allprojects {
             }
         }
         project.dependencies {
-            implementation 'androidx.core:core-ktx:1.9.0'
-            implementation 'androidx.appcompat:appcompat:1.6.0'
+            implementation 'androidx.core:core-ktx:1.10.1'
+            implementation 'androidx.appcompat:appcompat:1.6.1'
         }
     }
 
-    tasks.matching {
-        it.name.contains("transformClassesWithHiddenApiRefine")
-    }.configureEach {
-        notCompatibleWithConfigurationCache("https://github.com/RikkaApps/HiddenApiRefinePlugin/issues/9")
+    tasks.withType(KotlinCompile).configureEach {
+        compilerOptions.jvmTarget = JvmTarget.JVM_1_8
     }
 
     ext.addFrameworkJar = { String name ->
@@ -64,10 +66,10 @@ allprojects {
 // todo remove ext block after migrating to version catalog
 ext {
     FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
-    accompanist_version = '0.28.0'
-    libsu_version = '5.0.4'
-    protocVersion = '3.21.12'
-    room_version = '2.5.0'
+    accompanist_version = '0.32.0'
+    libsu_version = '5.2.0'
+    protocVersion = '3.24.2'
+    room_version = '2.5.2'
     optoVersion = "1.0.18"
 }
 
@@ -75,19 +77,12 @@ final def buildCommit = providers.exec {
     commandLine('git', 'rev-parse', '--short=7', 'HEAD')
 }.standardOutput.asText.get().trim()
 
-final def ciBuild = System.getenv("CI") == "true"
-final def ciRef = System.getenv("GITHUB_REF") ?: ""
-final def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
-final def isReleaseBuild = ciBuild && ciRef.contains("alpha")
-final def devReleaseName = ciBuild ? "Dev (#${ciRunNumber})" : "Dev (${buildCommit})"
-
 final def version = "12.1.0"
-final def releaseName = "Alpha 4"
-final def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
+final def versionDisplayName = "${version} (${buildCommit})"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
 final def quickstepMinSdk = "32"
-final def quickstepMaxSdk = "32"
+final def quickstepMaxSdk = "33"
 
 android {
     namespace "com.android.launcher3"
@@ -103,9 +98,21 @@ android {
         manifestPlaceholders.quickstepMaxSdk = quickstepMaxSdk
         buildConfigField "int", "QUICKSTEP_MIN_SDK", quickstepMinSdk
         buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
+
+        //noinspection ChromeOsAbiSupport
+        ndk.abiFilters += "arm64-v8a"
     }
 
     applicationVariants.configureEach { variant ->
+        def copyArtifactList = tasks.register("copy${variant.name.capitalize()}ArtifactList", Copy) {
+            dependsOn tasks.named("licensee${variant.name.capitalize()}")
+            from reporting.file("licensee/${variant.name}/artifacts.json")
+            into layout.buildDirectory.dir("generated/dependencyAssets/")
+        }
+        tasks.named("merge${variant.name.capitalize()}Assets").configure {
+            dependsOn copyArtifactList
+        }
+
         variant.outputs.configureEach {
             outputFileName = "Lawnchair ${variant.versionName}.apk"
         }
@@ -119,7 +126,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.0"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
 
     final def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -279,6 +286,7 @@ android {
 
         lawnWithQuickstep {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+            assets.srcDir layout.buildDirectory.dir("generated/dependencyAssets/")
         }
 
         withoutQuickstep {
@@ -292,7 +300,7 @@ android {
         }
     }
 
-    addFrameworkJar('framework-12l.jar')
+    addFrameworkJar('framework-13.jar')
 }
 
 dependencies {
@@ -308,47 +316,45 @@ dependencies {
     withoutQuickstepImplementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'plugin_core.jar')
 
     implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
-    implementation "androidx.recyclerview:recyclerview:1.2.1"
-    implementation "androidx.preference:preference-ktx:1.2.0"
+    implementation "androidx.recyclerview:recyclerview:1.3.1"
+    implementation "androidx.preference:preference-ktx:1.2.1"
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0'
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
-    implementation 'dev.rikka.tools.refine:runtime:3.1.1'
+    implementation 'dev.rikka.tools.refine:runtime:4.3.0'
 
-    implementation platform("androidx.compose:compose-bom:2023.01.00")
+    implementation platform("androidx.compose:compose-bom:2023.08.00")
     implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.ui:ui-util"
     debugImplementation "androidx.compose.ui:ui-tooling"
     implementation "androidx.compose.ui:ui-text-google-fonts"
     implementation "androidx.compose.foundation:foundation"
     implementation "androidx.compose.material:material-icons-extended"
     implementation "androidx.compose.material:material"
     implementation "androidx.compose.runtime:runtime-livedata"
-    implementation 'androidx.compose.material3:material3:1.1.0-alpha03'
+    implementation 'androidx.compose.material3:material3'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
-    implementation "androidx.activity:activity-compose:1.6.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
-    implementation "androidx.navigation:navigation-compose:2.5.3"
+    implementation "androidx.activity:activity-compose:1.7.2"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
+    implementation "androidx.navigation:navigation-compose:2.7.1"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanist_version"
     implementation "com.google.accompanist:accompanist-insets-ui:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
     implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-pager:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
-    implementation "com.google.android.material:material:1.8.0"
-    implementation "io.github.fornewid:material-motion-compose-core:0.10.4"
+    implementation "com.google.android.material:material:1.9.0"
+    implementation "io.github.fornewid:material-motion-compose-core:1.0.6"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
-    implementation 'io.coil-kt:coil-compose:2.2.2'
+    implementation 'io.coil-kt:coil-compose:2.4.0'
     implementation 'me.xdrop:fuzzywuzzy:1.4.0'
     implementation "com.patrykmichalik.opto:domain:$optoVersion"
     implementation "com.patrykmichalik.opto:core:$optoVersion"
     implementation "com.patrykmichalik.opto:compose:$optoVersion"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
-    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
 
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
@@ -358,12 +364,13 @@ dependencies {
     implementation "com.github.topjohnwu.libsu:service:$libsu_version"
 
     implementation "com.google.protobuf:protobuf-javalite:$protocVersion"
-    implementation 'com.github.LawnchairLauncher:oss-notices:1.0.2'
 
     // Persian Date
-    implementation 'com.github.samanzamani:PersianDate:1.5.4'
+    implementation 'com.github.samanzamani:PersianDate:1.6.1'
 
-    implementation 'com.airbnb.android:lottie:5.2.0'
+    implementation 'com.airbnb.android:lottie:6.1.0'
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:2.12"
 }
 
 ksp {
@@ -386,4 +393,14 @@ protobuf {
             }
         }
     }
+}
+
+licensee {
+    allow("Apache-2.0")
+    allow("BSD-3-Clause")
+    allowUrl("https://api.github.com/licenses/apache-2.0")
+    allowUrl("https://api.github.com/licenses/bsd-3-clause")
+    allowUrl("https://github.com/patrykmichalik/opto/blob/master/LICENSE")
+    allowUrl("https://github.com/RikkaApps/HiddenApiRefinePlugin/blob/main/LICENSE")
+    allowUrl("https://www.gnu.org/licenses/old-licenses/gpl-2.0.html")
 }

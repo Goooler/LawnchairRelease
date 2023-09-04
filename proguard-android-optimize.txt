@@ -1,5 +1,4 @@
 -allowaccessmodification
--dontoptimize
 -dontpreverify
 -dontusemixedcaseclassnames
 -dontskipnonpubliclibraryclasses

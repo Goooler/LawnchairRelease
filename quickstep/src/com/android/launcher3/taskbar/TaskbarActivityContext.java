@@ -201,8 +201,12 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         );
         // Adjust the frame by the rounded corners (ie. leaving just the bar as the inset) when
         // the IME is showing
-        mWindowLayoutParams.providedInternalImeInsets = Insets.of(0,
-                getDefaultTaskbarWindowHeight() - mTaskbarHeightForIme, 0, 0);
+//        mWindowLayoutParams.providedInternalImeInsets = new Insets[ITYPE_SIZE];
+//        final Insets reducingSize = Insets.of(0,
+//            getDefaultTaskbarWindowHeight() - mTaskbarHeightForIme, 0, 0);
+//        mWindowLayoutParams.providedInternalImeInsets[ITYPE_EXTRA_NAVIGATION_BAR] = reducingSize;
+//        mWindowLayoutParams.providedInternalImeInsets[ITYPE_BOTTOM_TAPPABLE_ELEMENT] =
+//            reducingSize;
 
         // Initialize controllers after all are constructed.
         mControllers.init(sharedState);
@@ -457,8 +461,14 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
             }
         }
         mWindowLayoutParams.height = height;
-        mWindowLayoutParams.providedInternalImeInsets =
-                Insets.of(0, height - mTaskbarHeightForIme, 0, 0);
+//        final Insets reducingSize =
+//            Insets.of(0, height - mTaskbarHeightForIme, 0, 0);
+//        if (mWindowLayoutParams.providedInternalImeInsets == null) {
+//            mWindowLayoutParams.providedInternalImeInsets = new Insets[ITYPE_SIZE];
+//        }
+//        mWindowLayoutParams.providedInternalImeInsets[ITYPE_EXTRA_NAVIGATION_BAR] = reducingSize;
+//        mWindowLayoutParams.providedInternalImeInsets[ITYPE_BOTTOM_TAPPABLE_ELEMENT] =
+//            reducingSize;
         mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
     }
 

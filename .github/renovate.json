@@ -5,8 +5,34 @@
     "extends": [
         "config:base"
     ],
-    "ignoreDeps": [
-        "org.jetbrains.kotlin",
-        "com.google.devtools.ksp"
+    "packageRules": [
+        {
+            "groupName": "Kotlin, KSP and Compose Compiler",
+            "matchPackagePrefixes": [
+                "com.google.devtools.ksp",
+                "androidx.compose.compiler"
+            ],
+            "matchPackagePatterns": [
+                "org.jetbrains.kotlin.*"
+            ]
+        },
+        {
+            "groupName": "AGP",
+            "matchPackagePatterns": [
+                "com.android.*"
+            ]
+        },
+        {
+            "groupName": "dev.rikka.tools.refine",
+            "matchPackagePatterns": [
+                "dev.rikka.tools.refine.*"
+            ]
+        },
+        {
+            "groupName": "androidx.lifecycle",
+            "matchPackagePatterns": [
+                "androidx.lifecycle:*"
+            ]
+        }
     ]
 }

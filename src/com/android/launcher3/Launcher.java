@@ -1196,7 +1196,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         LauncherState[] stateValues = LauncherState.values();
         LauncherState state = stateValues[stateOrdinal];
 
-        NonConfigInstance lastInstance = (NonConfigInstance) getLastNonConfigurationInstance();
+        NonConfigInstance lastInstance = (NonConfigInstance) getLastCustomNonConfigurationInstance();
         boolean forceRestore = lastInstance != null
                 && (lastInstance.config.diff(mOldConfig) & CONFIG_UI_MODE) != 0;
         if (forceRestore || !state.shouldDisableRestore()) {
@@ -1458,7 +1458,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     @Override
-    public Object onRetainNonConfigurationInstance() {
+    public Object onRetainCustomNonConfigurationInstance() {
         NonConfigInstance instance = new NonConfigInstance();
         instance.config = new Configuration(mOldConfig);
 
@@ -3114,7 +3114,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      * updates.
      */
     private void crossFadeWithPreviousAppearance() {
-        NonConfigInstance lastInstance = (NonConfigInstance) getLastNonConfigurationInstance();
+        NonConfigInstance lastInstance = (NonConfigInstance) getLastCustomNonConfigurationInstance();
 
         if (lastInstance == null || lastInstance.snapshot == null) {
             return;

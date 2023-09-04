@@ -510,8 +510,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
             ActivityOptionsCompat.setLauncherSourceInfo(
                     activityOptions.options, mLastTouchUpTime);
         }
-        if (Utilities.ATLEAST_S && LawnchairApp.isRecentsEnabled()) {
-            activityOptions.options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+        if (Utilities.ATLEAST_T && LawnchairApp.isRecentsEnabled()) {
+            activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
             addLaunchCookie(item, activityOptions.options);
         }
         return activityOptions;

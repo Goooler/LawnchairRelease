@@ -1,6 +1,6 @@
--keep,allowshrinking,allowoptimization class com.android.launcher3.** {
-  *;
-}
+-keepattributes InnerClasses
+
+-keep,allowshrinking,allowoptimization class com.android.launcher3.** { *; }
 
 -keep class com.android.launcher3.graphics.ShadowDrawable {
   public <init>(...);
@@ -19,12 +19,8 @@
     public <init>(...);
 }
 
--keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** {
-  *;
-}
--keep interface com.android.launcher3.model.nano.LauncherDumpProto.** {
-  *;
-}
+-keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** { *; }
+-keep interface com.android.launcher3.model.nano.LauncherDumpProto.** { *; }
 
 # Discovery bounce animation
 -keep class com.android.launcher3.allapps.DiscoveryBounce$VerticalProgressWrapper {
@@ -43,13 +39,9 @@
 -dontwarn com.android.internal.util.**
 
 ################ Do not optimize recents lib #############
--keep class com.android.systemui.** {
-  *;
-}
+-keep class com.android.systemui.** { *; }
 
--keep class com.android.quickstep.** {
-  *;
-}
+-keep class com.android.quickstep.** { *; }
 
 # Don't touch the restrictionbypass code
 -keep class org.chickenhook.restrictionbypass.** { *; }
@@ -58,26 +50,30 @@
 -dontwarn sun.misc.Unsafe
 
 # Silence warnings about classes that are available at runtime
--dontwarn android.provider.DeviceConfig
--dontwarn com.android.internal.colorextraction.ColorExtractor$GradientColors
--dontwarn com.android.internal.logging.MetricsLogger
--dontwarn com.android.internal.os.SomeArgs
--dontwarn android.content.pm.ParceledListSlice
--dontwarn com.android.internal.policy.ScreenDecorationsUtils
--dontwarn android.util.StatsEvent
--dontwarn android.service.wallpaper.IWallpaperEngine
--dontwarn android.content.pm.UserInfo
--dontwarn com.android.internal.app.IVoiceInteractionManagerService$Stub
--dontwarn com.android.internal.app.IVoiceInteractionManagerService
--dontwarn com.android.internal.annotations.VisibleForTesting
--dontwarn android.provider.DeviceConfig$OnPropertiesChangedListener
--dontwarn android.util.StatsEvent$Builder
--dontwarn com.android.internal.colorextraction.types.Tonal
--dontwarn android.content.pm.LauncherApps$AppUsageLimit
--dontwarn android.provider.SearchIndexablesContract
--dontwarn android.provider.SearchIndexablesProvider
--dontwarn android.content.pm.IPackageManager
+# These rules are generated automatically by the Android Gradle plugin.
+-dontwarn android.animation.AnimationHandler*
+-dontwarn android.content.om.**
+-dontwarn android.content.pm.**
+-dontwarn android.content.res.**
+-dontwarn android.hardware.devicestate.DeviceStateManager*
+-dontwarn android.provider.**
+-dontwarn android.service.wallpaper.IWallpaperEngine*
+-dontwarn android.util.**
+-dontwarn android.widget.RemoteViews*
+-dontwarn androidx.dynamicanimation.animation.AnimationHandler$FrameCallbackScheduler*
+-dontwarn com.android.internal.**
+-dontwarn com.google.android.collect.Sets*
+-dontwarn com.google.protobuf.nano.**
+-dontwarn dagger.**
+-dontwarn javax.inject.**
+# We can remove these rules after updating to OkHttp 4.10.1
+# https://github.com/square/okhttp/blob/339732e3a1b78be5d792860109047f68a011b5eb/okhttp/src/jvmMain/resources/META-INF/proguard/okhttp3.pro#L11-L14
+-dontwarn okhttp3.internal.platform.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
 
+-keep class com.android.** { *; }
 # Preserve Protobuf generated code
 -keep class com.android.launcher3.tracing.nano.LauncherTraceFileProto$* { *; }
 -keep class com.android.launcher3.logger.nano.LauncherAtom$* { *; }
@@ -95,52 +91,37 @@
 -keep class com.android.launcher3.userevent.LauncherLogExtensions$* { *; }
 -keep class app.lawnchair.LawnchairProto$* { *; }
 -keep class com.google.protobuf.Timestamp { *; }
--keepattributes InnerClasses
 
--keep class app.lawnchair.compatlib.** {
-  *;
+-keep class app.lawnchair.compatlib.** { *; }
+
+# remove all logging from production apk
+-assumenosideeffects class android.util.Log {
+    public static *** getStackTraceString(...);
+    public static *** d(...);
+    public static *** w(...);
+    public static *** v(...);
+    public static *** i(...);
 }
 
--keep class com.android.** {
-  *;
+# Ensure the custom, fast service loader implementation is removed. R8 will fold these for us
+-assumenosideeffects class kotlinx.coroutines.internal.MainDispatcherLoader {
+  boolean FAST_SERVICE_LOADER_ENABLED return false;
 }
+-assumenosideeffects class kotlinx.coroutines.internal.FastServiceLoader {
+  boolean ANDROID_DETECTED return true;
+}
+-checkdiscard class kotlinx.coroutines.internal.FastServiceLoader
 
-# Keep `Companion` object fields of serializable classes.
-# This avoids serializer lookup through `getDeclaredClasses` as done for named companion objects.
--if @kotlinx.serialization.Serializable class **
--keepclassmembers class <1> {
-    static <1>$Companion Companion;
+# remove some kotlin overhead
+-assumenosideeffects class kotlin.jvm.internal.Intrinsics {
+    static void checkNotNull(java.lang.Object);
+    static void checkNotNull(java.lang.Object, java.lang.String);
+    static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
+    static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
+    static void checkNotNullParameter(java.lang.Object, java.lang.String);
+    static void checkExpressionValueIsNotNull(java.lang.Object, java.lang.String);
+    static void checkNotNullExpressionValue(java.lang.Object, java.lang.String);
+    static void checkReturnedValueIsNotNull(java.lang.Object, java.lang.String);
+    static void checkReturnedValueIsNotNull(java.lang.Object, java.lang.String, java.lang.String);
+    static void throwUninitializedPropertyAccessException(java.lang.String);
 }
-
-# Keep `serializer()` on companion objects (both default and named) of serializable classes.
--if @kotlinx.serialization.Serializable class ** {
-    static **$* *;
-}
--keepclassmembers class <2>$<3> {
-    kotlinx.serialization.KSerializer serializer(...);
-}
-
-# Keep `INSTANCE.serializer()` of serializable objects.
--if @kotlinx.serialization.Serializable class ** {
-    public static ** INSTANCE;
-}
--keepclassmembers class <1> {
-    public static <1> INSTANCE;
-    kotlinx.serialization.KSerializer serializer(...);
-}
-
-# @Serializable and @Polymorphic are used at runtime for polymorphic serialization.
--keepattributes RuntimeVisibleAnnotations,AnnotationDefault
-
-# Serializer for classes with named companion objects are retrieved using `getDeclaredClasses`.
-# If you have any, uncomment and replace classes with those containing named companion objects.
-#-keepattributes InnerClasses # Needed for `getDeclaredClasses`.
-#-if @kotlinx.serialization.Serializable class
-#com.example.myapplication.HasNamedCompanion, # <-- List serializable classes with named companions.
-#com.example.myapplication.HasNamedCompanion2
-#{
-#    static **$* *;
-#}
-#-keepnames class <1>$$serializer { # -keepnames suffices; class is kept when serializer() is kept.
-#    static <1>$$serializer INSTANCE;
-#}

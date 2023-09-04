@@ -16,29 +16,18 @@
 
 package app.lawnchair
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.IntentSender
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.ViewTreeObserver
-import androidx.activity.OnBackPressedDispatcher
-import androidx.activity.OnBackPressedDispatcherOwner
-import androidx.activity.result.ActivityResultRegistry
-import androidx.activity.result.ActivityResultRegistryOwner
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.*
-import androidx.savedstate.SavedStateRegistry
-import androidx.savedstate.SavedStateRegistryController
-import androidx.savedstate.SavedStateRegistryOwner
-import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
@@ -52,7 +41,9 @@ import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.ui.popup.LawnchairShortcut
 import app.lawnchair.util.getThemedIconPacksInstalled
-import com.android.launcher3.*
+import com.android.launcher3.BaseActivity
+import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.search.SearchAdapterProvider
@@ -75,94 +66,13 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.stream.Stream
 
-class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
-    SavedStateRegistryOwner, ActivityResultRegistryOwner, OnBackPressedDispatcherOwner {
 
-    private val lifecycleRegistry = LifecycleRegistry(this)
-    private val savedStateRegistryController = SavedStateRegistryController.create(this)
-    override val savedStateRegistry: SavedStateRegistry
-        get() = savedStateRegistryController.savedStateRegistry
-    private val activityResultRegistry = object : ActivityResultRegistry() {
-        override fun <I : Any?, O : Any?> onLaunch(
-            requestCode: Int,
-            contract: ActivityResultContract<I, O>,
-            input: I,
-            options: ActivityOptionsCompat?
-        ) {
-            val activity = this@LawnchairLauncher
-
-            // Immediate result path
-            val synchronousResult = contract.getSynchronousResult(activity, input)
-            if (synchronousResult != null) {
-                Handler(Looper.getMainLooper()).post {
-                    dispatchResult(
-                        requestCode,
-                        synchronousResult.value
-                    )
-                }
-                return
-            }
-
-            // Start activity path
-            val intent = contract.createIntent(activity, input)
-            var optionsBundle: Bundle? = null
-            // If there are any extras, we should defensively set the classLoader
-            if (intent.extras != null && intent.extras!!.classLoader == null) {
-                intent.setExtrasClassLoader(activity.classLoader)
-            }
-            if (intent.hasExtra(StartActivityForResult.EXTRA_ACTIVITY_OPTIONS_BUNDLE)) {
-                optionsBundle =
-                    intent.getBundleExtra(StartActivityForResult.EXTRA_ACTIVITY_OPTIONS_BUNDLE)
-                intent.removeExtra(StartActivityForResult.EXTRA_ACTIVITY_OPTIONS_BUNDLE)
-            } else if (options != null) {
-                optionsBundle = options.toBundle()
-            }
-            if (RequestMultiplePermissions.ACTION_REQUEST_PERMISSIONS == intent.action) {
-                // requestPermissions path
-                var permissions =
-                    intent.getStringArrayExtra(RequestMultiplePermissions.EXTRA_PERMISSIONS)
-                if (permissions == null) {
-                    permissions = arrayOfNulls(0)
-                }
-                ActivityCompat.requestPermissions(activity, permissions, requestCode)
-            } else if (StartIntentSenderForResult.ACTION_INTENT_SENDER_REQUEST == intent.action) {
-                val request: IntentSenderRequest =
-                    intent.getParcelableExtra(StartIntentSenderForResult.EXTRA_INTENT_SENDER_REQUEST)!!
-                try {
-                    // startIntentSenderForResult path
-                    ActivityCompat.startIntentSenderForResult(
-                        activity, request.intentSender,
-                        requestCode, request.fillInIntent, request.flagsMask,
-                        request.flagsValues, 0, optionsBundle
-                    )
-                } catch (e: IntentSender.SendIntentException) {
-                    Handler(Looper.getMainLooper()).post {
-                        dispatchResult(
-                            requestCode, RESULT_CANCELED,
-                            Intent()
-                                .setAction(StartIntentSenderForResult.ACTION_INTENT_SENDER_REQUEST)
-                                .putExtra(StartIntentSenderForResult.EXTRA_SEND_INTENT_EXCEPTION, e)
-                        )
-                    }
-                }
-            } else {
-                // startActivityForResult path
-                ActivityCompat.startActivityForResult(activity, intent, requestCode, optionsBundle)
-            }
-        }
-    }
-    private val _onBackPressedDispatcher = OnBackPressedDispatcher {
-        super.onBackPressed()
-    }
-    val gestureController by lazy { GestureController(this) }
+class LawnchairLauncher : QuickstepLauncher() {
     private val defaultOverlay by lazy { OverlayCallbackImpl(this) }
     private val prefs by lazy { PreferenceManager.getInstance(this) }
     private val preferenceManager2 by lazy { PreferenceManager2.getInstance(this) }
     private val insetsController by lazy { WindowInsetsControllerCompat(launcher.window, rootView) }
-
     private val themeProvider by lazy { ThemeProvider.INSTANCE.get(this) }
-    private lateinit var colorScheme: ColorScheme
-
     private val noStatusBarStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionStart(toState: LauncherState) {
             if (toState is OverviewState) {
@@ -175,14 +85,14 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
             }
         }
     }
-
     private var hasBackGesture = false
+    private lateinit var colorScheme: ColorScheme
+
+    val gestureController by lazy { GestureController(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
-        savedStateRegistryController.performRestore(savedInstanceState)
         super.onCreate(savedInstanceState)
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
 
@@ -236,13 +146,8 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         showQuickstepWarningIfNecessary()
 
         reloadIconsIfNeeded()
-    }
 
-    override fun setupViews() {
-        super.setupViews()
-        val launcherRootView = findViewById<LauncherRootView>(R.id.launcher)
-        ViewTreeLifecycleOwner.set(launcherRootView, this)
-        launcherRootView.setViewTreeSavedStateRegistryOwner(this)
+        requestNotificationPermission()
     }
 
     override fun collectStateHandlers(out: MutableList<StateManager.StateHandler<*>>) {
@@ -250,16 +155,11 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         out.add(SearchBarStateHandler(this))
     }
 
-    override fun getSupportedShortcuts(): Stream<SystemShortcut.Factory<*>> {
-        return Stream.concat(
-            super.getSupportedShortcuts(),
-            Stream.of(LawnchairShortcut.CUSTOMIZE)
-        )
-    }
+    override fun getSupportedShortcuts(): Stream<SystemShortcut.Factory<*>> =
+        Stream.concat(super.getSupportedShortcuts(), Stream.of(LawnchairShortcut.CUSTOMIZE))
 
-    override fun createSearchAdapterProvider(allapps: AllAppsContainerView): SearchAdapterProvider {
-        return LawnchairSearchAdapterProvider(this, allapps)
-    }
+    override fun createSearchAdapterProvider(allapps: AllAppsContainerView): SearchAdapterProvider =
+        LawnchairSearchAdapterProvider(this, allapps)
 
     override fun updateTheme() {
         if (themeProvider.colorScheme != colorScheme) {
@@ -285,14 +185,8 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         return super.shouldBackButtonBeHidden(toState)
     }
 
-    override fun onStart() {
-        super.onStart()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
-    }
-
     override fun onResume() {
         super.onResume()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         restartIfPending()
 
         dragLayer.viewTreeObserver.addOnDrawListener(object : ViewTreeObserver.OnDrawListener {
@@ -312,52 +206,22 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         })
     }
 
-    override fun onPause() {
-        super.onPause()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    }
-
-    override fun onBackPressed() {
-        _onBackPressedDispatcher.onBackPressed()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        savedStateRegistryController.performSave(outState)
-    }
-
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (activityResultRegistry.dispatchResult(requestCode, resultCode, data)) {
             mPendingActivityRequestCode = -1
         } else {
+            @Suppress("DEPRECATION")
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
-    override fun getLifecycle(): Lifecycle {
-        return lifecycleRegistry
-    }
+    override fun getDefaultOverlay(): LauncherOverlayManager = defaultOverlay
 
-    override fun getActivityResultRegistry(): ActivityResultRegistry {
-        return activityResultRegistry
-    }
-
-    override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {
-        return _onBackPressedDispatcher
-    }
-
-    override fun getDefaultOverlay(): LauncherOverlayManager {
-        return defaultOverlay
+    fun recreateIfNotScheduled() {
+        if (sRestartFlags == 0) {
+            recreate()
+        }
     }
 
     private fun restartIfPending() {
@@ -367,27 +231,6 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
                 sRestartFlags = 0
                 recreate()
             }
-        }
-    }
-
-    private fun scheduleFlag(flag: Int) {
-        sRestartFlags = sRestartFlags or flag
-        if (lifecycle.currentState === Lifecycle.State.RESUMED) {
-            restartIfPending()
-        }
-    }
-
-    fun scheduleRecreate() {
-        scheduleFlag(FLAG_RECREATE)
-    }
-
-    fun scheduleRestart() {
-        scheduleFlag(FLAG_RESTART)
-    }
-
-    fun recreateIfNotScheduled() {
-        if (sRestartFlags == 0) {
-            recreate()
         }
     }
 
@@ -403,9 +246,20 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         }
     }
 
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return;
+        if (NotificationManagerCompat.from(this).areNotificationsEnabled()) return;
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+            REQUEST_CODE_NOTIFICATION_PERMISSION
+        )
+    }
+
     companion object {
         private const val FLAG_RECREATE = 1 shl 0
         private const val FLAG_RESTART = 1 shl 1
+        private const val REQUEST_CODE_NOTIFICATION_PERMISSION = 100
 
         var sRestartFlags = 0
 

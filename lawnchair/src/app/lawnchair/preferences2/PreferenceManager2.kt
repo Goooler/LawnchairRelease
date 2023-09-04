@@ -17,7 +17,6 @@
 package app.lawnchair.preferences2
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.*
@@ -34,6 +33,7 @@ import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.theme.color.ColorMode
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
@@ -47,9 +47,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 import com.android.launcher3.graphics.IconShape as L3IconShape
 
@@ -197,6 +195,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
             key = booleanPreferencesKey(name = "lock_home_screen_on_popup"),
             defaultValue = context.resources.getBoolean(R.bool.config_default_lock_home_screen_on_popup),
             onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val showSystemSettingsEntryOnPopUp = preference(
+        key = booleanPreferencesKey(name = "show_system_settings_entry_on_popup"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_show_system_settings_entry_on_popup),
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val hideAppDrawerSearchBar = preference(
@@ -438,9 +442,9 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         key = key,
         defaultValue = defaultValue,
         parse = { value ->
-            runCatching { Json.decodeFromString<T>(value) }.getOrDefault(defaultValue)
+            runCatching { kotlinxJson.decodeFromString<T>(value) }.getOrDefault(defaultValue)
         },
-        save = Json::encodeToString,
+        save = kotlinxJson::encodeToString,
     )
 
     init {
