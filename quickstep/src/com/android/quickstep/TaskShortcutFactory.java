@@ -197,7 +197,7 @@ public interface TaskShortcutFactory {
 
             ActivityOptions options = mFactory.makeLaunchOptions(mTarget);
             if (options != null && Utilities.ATLEAST_S) {
-                options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+                options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
             }
             if (options != null
                     && ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
