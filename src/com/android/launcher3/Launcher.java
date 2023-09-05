@@ -877,6 +877,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
             int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         PendingRequestArgs pendingArgs = mPendingRequestArgs;
         if (requestCode == REQUEST_PERMISSION_CALL_PHONE && pendingArgs != null
                 && pendingArgs.getRequestCode() == REQUEST_PERMISSION_CALL_PHONE) {
