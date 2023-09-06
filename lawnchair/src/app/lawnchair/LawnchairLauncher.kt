@@ -18,8 +18,6 @@ package app.lawnchair
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.ViewTreeObserver
@@ -204,16 +202,6 @@ class LawnchairLauncher : QuickstepLauncher() {
                 depthController.reapplyDepth()
             }
         })
-    }
-
-    @Suppress("OVERRIDE_DEPRECATION")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (activityResultRegistry.dispatchResult(requestCode, resultCode, data)) {
-            mPendingActivityRequestCode = -1
-        } else {
-            @Suppress("DEPRECATION")
-            super.onActivityResult(requestCode, resultCode, data)
-        }
     }
 
     override fun getDefaultOverlay(): LauncherOverlayManager = defaultOverlay
