@@ -870,6 +870,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public void onActivityResult(
             final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         mPendingActivityRequestCode = -1;
         handleActivityResult(requestCode, resultCode, data);
     }
