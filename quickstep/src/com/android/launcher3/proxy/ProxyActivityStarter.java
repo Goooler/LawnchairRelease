@@ -16,7 +16,6 @@
 
 package com.android.launcher3.proxy;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -24,9 +23,11 @@ import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.launcher3.util.StartActivityParams;
 
-public class ProxyActivityStarter extends Activity {
+public class ProxyActivityStarter extends AppCompatActivity {
 
     private static final String TAG = "ProxyActivityStarter";
 

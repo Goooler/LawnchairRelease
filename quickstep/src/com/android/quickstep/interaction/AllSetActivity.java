@@ -25,7 +25,6 @@ import static com.android.launcher3.Utilities.mapRange;
 import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
 
 import android.animation.Animator;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -58,6 +57,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.DeviceProfile;
@@ -83,7 +83,7 @@ import java.util.Map;
  * screen to go home
  * for the gestural system navigation.
  */
-public class AllSetActivity extends Activity {
+public class AllSetActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "AllSetActivity";
     private static final String URI_SYSTEM_NAVIGATION_SETTING = "#Intent;action=com.android.settings.SEARCH_RESULT_TRAMPOLINE;S.:settings:fragment_args_key=gesture_system_navigation_input_summary;S.:settings:show_fragment=com.android.settings.gestures.SystemNavigationGestureSettings;end";
