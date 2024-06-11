@@ -81,4 +81,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release view ${{ env.RELEASE_NAME }} && gh release delete "nightly" -y --cleanup-tag
-          gh release create ${{ env.RELEASE_NAME }} "./Release APK/apk/lawnWithQuickstep/release/"*.apk "./Release APK/mapping/lawnWithQuickstepRelease/"mapping.txt -t "Lawnchair Nightly" --generate-notes
+          gh release create ${{ env.RELEASE_NAME }} "./Release APK/apk/lawnWithQuickstep/release/"*.apk "./Release APK/mapping/lawnWithQuickstepRelease/"mapping.txt -t ${{ env.RELEASE_NAME }} --generate-notes
