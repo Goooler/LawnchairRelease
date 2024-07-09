@@ -23,7 +23,7 @@ import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_PROVIDER;
 
 import android.app.Activity;
-import androidx.fragment.app.Fragment;
+import android.app.Fragment;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
