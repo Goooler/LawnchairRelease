@@ -32,8 +32,8 @@ import android.util.Log;
 import android.view.View;
 import android.window.OnBackInvokedDispatcher;
 
+import androidx.activity.ComponentActivity;
 import androidx.annotation.IntDef;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.StatsLogManager;
@@ -53,7 +53,7 @@ import java.util.StringJoiner;
 /**
  * Launcher BaseActivity
  */
-public abstract class BaseActivity extends AppCompatActivity implements ActivityContext {
+public abstract class BaseActivity extends ComponentActivity implements ActivityContext {
 
     private static final String TAG = "BaseActivity";
     static final boolean DEBUG = false;
