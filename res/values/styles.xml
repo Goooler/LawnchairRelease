@@ -406,7 +406,7 @@
         <item name="android:stateListAnimator">@null</item>
     </style>
 
-    <style name="AddItemActivityTheme" parent="Theme.AppCompat.Translucent.NoTitleBar">
+    <style name="AddItemActivityTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowTranslucentStatus">true</item>
