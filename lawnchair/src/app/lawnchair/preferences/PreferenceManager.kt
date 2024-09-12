@@ -42,6 +42,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val allowRotation = BoolPref("pref_allowRotation", false)
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, recreate)
     val transparentIconBackground = BoolPref("prefs_transparentIconBackground", false, recreate)
+    val shadowBGIcons = BoolPref("pref_shadowBGIcons", true, recreate)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
     val hotseatColumns = IntPref("pref_hotseatColumns", 4, reloadGrid)
     val workspaceColumns = IntPref("pref_workspaceColumns", 4)
@@ -65,6 +66,8 @@ class PreferenceManager private constructor(private val context: Context) : Base
         override fun flattenValue(value: String) = value
         override fun unflattenValue(value: String) = value
     }
+
+    val recentActionOrder = StringPref("pref_recentActionOrder", "0,1,2,3,4", recreate)
 
     private val fontCache = FontCache.INSTANCE.get(context)
     val fontWorkspace = FontPref("pref_workspaceFont", fontCache.uiText, recreate)
@@ -91,7 +94,14 @@ class PreferenceManager private constructor(private val context: Context) : Base
 
     val themedIcons = BoolPref("themed_icons", true, recreate)
     val drawerThemedIcons = BoolPref("drawer_themed_icons", false, recreate)
+    val tintIconPackBackgrounds = BoolPref("tint_icon_pack_backgrounds", false, recreate)
+
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
+    val hotseatQsbAlpha = IntPref("pref_searchHotseatTranparency", 100, recreate)
+    val hotseatQsbStrokeWidth = FloatPref("pref_searchStrokeWidth", 0F, recreate)
+    val enableWallpaperBlur = BoolPref("pref_enableWallpaperBlur", false, recreate)
+    val wallpaperBlur = IntPref("pref_wallpaperBlur", 25, recreate)
+    val wallpaperBlurFactorThreshold = IntPref("pref_wallpaperBlurFactor", 25, recreate)
 
     val recentsActionScreenshot = BoolPref("pref_recentsActionScreenshot", !isOnePlusStock)
     val recentsActionShare = BoolPref("pref_recentsActionShare", isOnePlusStock)

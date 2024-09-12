@@ -37,7 +37,6 @@ import app.lawnchair.util.filesAndStorageGranted
 import com.android.launcher3.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
-import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun SearchPreferences() {
@@ -67,14 +66,24 @@ fun SearchPreferences() {
                 SearchProvider(
                     context = context,
                 )
+                SwitchPreference(
+                    label = stringResource(R.string.allapps_match_qsb_style_label),
+                    description = stringResource(R.string.allapps_match_qsb_style_description),
+                    adapter = prefs2.matchHotseatQsbStyle.getAdapter(),
+                )
             }
 
             PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
                 val searchAlgorithm = preferenceManager2().searchAlgorithm.getAdapter().state.value
                 if (searchAlgorithm != LawnchairSearchAlgorithm.ASI_SEARCH) {
-                    @OptIn(ExperimentalPermissionsApi::class)
+                    val canDisable = searchAlgorithm != LawnchairSearchAlgorithm.APP_SEARCH
+                    val adapter = prefs.searchResultApps.getAdapter()
+
                     SearchSuggestionPreference(
-                        adapter = prefs.searchResultApps.getAdapter(),
+                        checked = if (canDisable) adapter.state.value else true,
+                        onCheckedChange = if (canDisable) adapter::onChange else ({}),
+                        enabled = if (canDisable) true else false,
+                        onRequestPermission = {},
                         maxCountAdapter = prefs2.maxAppSearchResultCount.getAdapter(),
                         maxCountRange = 3..15,
                         label = stringResource(R.string.search_pref_result_apps_and_shortcuts_title),
@@ -118,22 +127,28 @@ private fun ASISearchSettings(prefs: PreferenceManager) {
         adapter = prefs.searchResultPixelTips.getAdapter(),
         label = stringResource(id = R.string.search_pref_result_tips_title),
     )
+    SwitchPreference(
+        adapter = prefs.searchResultSettings.getAdapter(),
+        label = stringResource(id = R.string.search_pref_result_settings_title),
+    )
 }
 
 @Composable
 private fun SearchProvider(
     context: Context,
 ) {
-    val searchAlgorithmEntries = sequenceOf(
-        ListPreferenceEntry(LawnchairSearchAlgorithm.APP_SEARCH) { stringResource(R.string.search_algorithm_app_search) },
-        ListPreferenceEntry(LawnchairSearchAlgorithm.LOCAL_SEARCH) { stringResource(R.string.search_algorithm_global_search_on_device) },
-        ListPreferenceEntry(LawnchairSearchAlgorithm.ASI_SEARCH) { stringResource(R.string.search_algorithm_global_search_via_asi) },
-    ).filter {
-        when (it.value) {
-            LawnchairSearchAlgorithm.ASI_SEARCH -> LawnchairSearchAlgorithm.isASISearchEnabled(context)
-            else -> true
-        }
-    }.toPersistentList()
+    val searchAlgorithmEntries = remember {
+        sequenceOf(
+            ListPreferenceEntry(LawnchairSearchAlgorithm.APP_SEARCH) { stringResource(R.string.search_algorithm_app_search) },
+            ListPreferenceEntry(LawnchairSearchAlgorithm.LOCAL_SEARCH) { stringResource(R.string.search_algorithm_global_search_on_device) },
+            ListPreferenceEntry(LawnchairSearchAlgorithm.ASI_SEARCH) { stringResource(R.string.search_algorithm_global_search_via_asi) },
+        ).filter {
+            when (it.value) {
+                LawnchairSearchAlgorithm.ASI_SEARCH -> LawnchairSearchAlgorithm.isASISearchEnabled(context)
+                else -> true
+            }
+        }.toList()
+    }
 
     ListPreference(
         adapter = preferenceManager2().searchAlgorithm.getAdapter(),
@@ -175,10 +190,6 @@ private fun LocalSearchSettings(
         )
         WebSearchProvider(
             adapter = prefs2.webSuggestionProvider.getAdapter(),
-        )
-        SwitchPreference(
-            label = stringResource(R.string.allapps_use_web_suggestion_icon_label),
-            adapter = prefs2.useDrawerSearchIcon.getAdapter(),
         )
     }
     SearchSuggestionPreference(

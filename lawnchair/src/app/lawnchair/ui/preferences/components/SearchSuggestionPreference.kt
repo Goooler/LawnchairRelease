@@ -3,6 +3,7 @@ package app.lawnchair.ui.preferences.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -48,14 +49,16 @@ fun SearchSuggestionPreference(
 ) {
     val isGranted = permissionState?.status?.isGranted ?: true
 
-    LaunchedEffect("") {
+    LaunchedEffect(Unit) {
         if (!isGranted) {
             adapter.onChange(false)
         }
     }
 
     SearchSuggestionPreference(
-        adapter = adapter,
+        checked = adapter.state.value,
+        onCheckedChange = { adapter.onChange(it) },
+        enabled = isGranted,
         maxCountAdapter = maxCountAdapter,
         maxCountRange = maxCountRange,
         label = label,
@@ -83,33 +86,58 @@ fun SearchSuggestionPreference(
     permissionRationale: String? = null,
     content: @Composable (() -> Unit)? = null,
 ) {
-    val bottomSheetHandler = bottomSheetHandler
-    val preventSwitchChange = false
+    SearchSuggestionPreference(
+        checked = adapter.state.value,
+        onCheckedChange = { adapter.onChange(it) },
+        enabled = isGranted,
+        maxCountAdapter = maxCountAdapter,
+        maxCountRange = maxCountRange,
+        label = label,
+        maxCountLabel = maxCountLabel,
+        onRequestPermission = onRequestPermission,
+        isGranted = isGranted,
+        description = description,
+        permissionRationale = permissionRationale,
+        content = content,
+    )
+}
 
+@Composable
+fun SearchSuggestionPreference(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    enabled: Boolean,
+    maxCountAdapter: PreferenceAdapter<Int>,
+    maxCountRange: ClosedRange<Int>,
+    label: String,
+    maxCountLabel: String,
+    onRequestPermission: (() -> Unit)?,
+    isGranted: Boolean = true,
+    description: String? = null,
+    permissionRationale: String? = null,
+    content: @Composable (() -> Unit)? = null,
+) {
     SearchSuggestionsSwitchPreference(
         label = label,
         description = description,
-        checked = adapter.state.value,
-        enabled = isGranted,
-        preventSwitchChange = preventSwitchChange,
-        onClick = {
-            bottomSheetHandler.show {
-                BottomSheetContent(
-                    onHide = { bottomSheetHandler.hide() },
-                    isPermissionGranted = isGranted,
-                    adapterValue = adapter.state.value,
-                    adapterOnChange = adapter::onChange,
-                    label = label,
-                    description = description,
-                    maxCountLabel = maxCountLabel,
-                    maxCountAdapter = maxCountAdapter,
-                    maxCountRange = maxCountRange,
-                    content = content,
-                    onRequestPermission = onRequestPermission,
-                    permissionRationale = permissionRationale,
-                    preventSwitchChange = preventSwitchChange,
-                )
-            }
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        enabled = enabled,
+        content = { onHide ->
+            BottomSheetContent(
+                onHide = onHide,
+                isPermissionGranted = isGranted,
+                adapterValue = checked,
+                adapterEnabled = enabled,
+                adapterOnChange = onCheckedChange,
+                label = label,
+                maxCountLabel = maxCountLabel,
+                maxCountAdapter = maxCountAdapter,
+                maxCountRange = maxCountRange,
+                content = content,
+                onRequestPermission = onRequestPermission,
+                permissionRationale = permissionRationale,
+            )
         },
     )
 }
@@ -118,17 +146,15 @@ fun SearchSuggestionPreference(
 private fun BottomSheetContent(
     adapterValue: Boolean,
     adapterOnChange: (Boolean) -> Unit,
+    adapterEnabled: Boolean,
     label: String,
-    description: String?,
     maxCountLabel: String,
     maxCountAdapter: PreferenceAdapter<Int>,
     maxCountRange: ClosedRange<Int>,
     isPermissionGranted: Boolean,
     onHide: () -> Unit,
     onRequestPermission: (() -> Unit)?,
-    // TODO optimize permission requesting code
     permissionRationale: String?,
-    preventSwitchChange: Boolean = false,
     content: @Composable (() -> Unit)?,
 ) {
     ModalBottomSheetContent(
@@ -141,14 +167,9 @@ private fun BottomSheetContent(
         Column {
             MainSwitchPreference(
                 checked = adapterValue,
-                onCheckedChange = {
-                    if (!preventSwitchChange) {
-                        adapterOnChange(it)
-                    }
-                },
+                onCheckedChange = adapterOnChange,
                 label = label,
-                description = description,
-                enabled = if (preventSwitchChange) false else isPermissionGranted,
+                enabled = adapterEnabled,
             ) {
                 Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                     SliderPreference(
@@ -174,13 +195,16 @@ private fun BottomSheetContent(
                             Text(
                                 text = permissionRationale,
                             )
-                            Button(
-                                onClick = {
-                                    onHide()
-                                    onRequestPermission()
-                                },
-                            ) {
-                                Text(text = stringResource(id = R.string.grant_requested_permissions))
+                            Spacer(Modifier.height(8.dp))
+                            Row {
+                                Spacer(Modifier.weight(1f))
+                                Button(
+                                    onClick = {
+                                        onRequestPermission()
+                                    },
+                                ) {
+                                    Text(text = stringResource(id = R.string.grant_requested_permissions))
+                                }
                             }
                         }
                     }
@@ -194,14 +218,18 @@ private fun BottomSheetContent(
 private fun SearchSuggestionsSwitchPreference(
     label: String,
     checked: Boolean,
-    preventSwitchChange: Boolean,
-    onClick: () -> Unit,
+    onCheckedChange: (Boolean) -> Unit,
     enabled: Boolean,
     description: String? = null,
+    content: @Composable ((() -> Unit) -> Unit),
 ) {
+    val bottomSheetHandler = bottomSheetHandler
+
     PreferenceTemplate(
         modifier = Modifier.clickable {
-            onClick()
+            bottomSheetHandler.show {
+                content { bottomSheetHandler.hide() }
+            }
         },
         contentModifier = Modifier
             .fillMaxHeight()
@@ -222,8 +250,8 @@ private fun SearchSuggestionsSwitchPreference(
                     .padding(all = 16.dp)
                     .height(24.dp),
                 checked = checked,
-                onCheckedChange = { onClick() },
-                enabled = if (preventSwitchChange) false else enabled,
+                onCheckedChange = onCheckedChange,
+                enabled = enabled,
             )
         },
         applyPaddings = false,
@@ -237,8 +265,8 @@ private fun SearchSuggestionsSwitchPreferencePreview() {
         SearchSuggestionsSwitchPreference(
             label = "example",
             checked = true,
-            onClick = { /*TODO*/ },
-            preventSwitchChange = false,
+            content = {},
+            onCheckedChange = {},
             enabled = true,
         )
     }

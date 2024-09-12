@@ -88,7 +88,7 @@
     <string name="what_to_show">What to show</string>
 
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
 
     <string name="iconPackPackageDefault" translatable="false">""</string>
 
@@ -187,6 +187,8 @@
     <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
     <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
 
+    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
+
     <string name="background_lightness_label">Background lightness</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
 
@@ -208,6 +210,7 @@
     <string name="icon_shape_egg">Egg</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_hexagon">Hexagon</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Rounded square</string>
     <string name="icon_shape_sharp_square">Sharp square</string>
@@ -355,9 +358,14 @@
     <string name="smartspace_battery_status">Battery status</string>
     <string name="smartspace_now_playing">Now Playing</string>
 
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
+
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tap to set up</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
 
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Show on home screen</string>
@@ -395,6 +403,7 @@
 
     <string name="acknowledgements">Acknowledgements</string>
     <string name="translate">Translate</string>
+    <string name="donate">Donate</string>
 
     <!--
 
@@ -426,6 +435,7 @@
 
     <string name="gesture_handler_no_op">Do nothing</string>
     <string name="gesture_handler_sleep">Sleep</string>
+    <string name="gesture_handler_recents">Open Recents</string>
     <string name="gesture_handler_open_notifications">Open notification panel</string>
     <string name="gesture_handler_open_app_option">Open app</string>
     <string name="gesture_handler_open_app_config">Open %1$s</string>
@@ -439,9 +449,12 @@
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
     <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
 
-    <string name="dt2s_a11y_hint_title">Turn on accessibility service</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="dt2s_warning_open_settings">Open settings</string>
+
+    <string name="d2ts_recents_a11y_hint_title">Turn on accessibility service</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_recents_warning_open_settings">Open settings</string>
+
+<string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
 
     <!--
 
@@ -470,6 +483,10 @@
     <string name="home_screen_rotation_label">Home screen rotation</string>
     <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
 
+    <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
+    <string name="wallpaper_background_blur">Blur intensity</string>
+    <string name="wallpaper_background_blur_factor">Factor threshold</string>
+
     <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
 
     <string name="minus_one_enable">Show feed</string>
@@ -495,8 +512,8 @@
 
     <string name="popup_menu">Pop-up menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Show lock button</string>
-    <string name="show_system_settings_entry">Show system settings entry</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit button</string>
+    <string name="show_system_settings_entry">Show system settings button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
 
     <string name="status_bar_label">Status bar</string>
     <string name="show_status_bar">Show status bar</string>
@@ -524,6 +541,9 @@
     <string name="hotseat_mode_lawnchair" translatable="false">Lawnchair</string>
     <string name="hotseat_mode_google_search">Google Search bar</string>
 
+    <string name="qsb_hotseat_background_transparency">Background opacity</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">Corner radius</string>
     <string name="apply_accent_color_label">Apply accent color</string>
     <string name="search_provider">Search provider</string>
@@ -545,6 +565,7 @@
     <string name="search_provider_github" translatable="false">GitHub</string>
     <string name="search_provider_youtube" translatable="false">YouTube</string>
     <string name="search_provider_pixel_search" translatable="false">Pixel Search</string>
+    <string name="search_provider_yandex" translatable="false">Yandex</string>
 
     <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
 
@@ -581,7 +602,8 @@
     </plurals>
 
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Icon background opacity</string>
+    <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
+    <string name="folder_bg_opacity_label">Folder background opacity</string>
     <string name="folder_preview_bg_color_label">Icon background color</string>
 
     <string name="max_folder_columns">Maximum folder columns</string>
@@ -673,20 +695,21 @@
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
 
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
-    <string name="max_people_result_count_title">Maximum number of people in search results</string>
-    <string name="max_file_result_count_title">Maximum number of files in search results</string>
-    <string name="max_settings_entry_result_count_title">Maximum number of settings entries in search results</string>
-    <string name="max_recent_result_count_title">Maximum number of history entries in search results</string>
-    <string name="max_suggestion_result_count_title">Maximum number of suggestions in search results</string>
+    <string name="max_apps_result_count_title">Maximum number of apps</string>
+    <string name="max_people_result_count_title">Maximum number of people</string>
+    <string name="max_file_result_count_title">Maximum number of files</string>
+    <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
+    <string name="max_recent_result_count_title">Maximum items for search history</string>
+    <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
     <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
 
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
     <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
     <string name="grant_requested_permissions">Grant permissions</string>
-    <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
 
     <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
     <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
+    <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
+    <string name="allapps_match_qsb_style_description">Clicking the dock search bar will now open the app drawer search UI</string>
 </resources>

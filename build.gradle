@@ -3,15 +3,15 @@ import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "8.5.0"
-    id 'com.android.library' version "8.5.0" apply false
-    id 'com.android.test' version '8.5.0' apply false
-    id 'androidx.baselineprofile' version '1.2.4'
-    id 'org.jetbrains.kotlin.android' version "2.0.0"
-    id 'org.jetbrains.kotlin.plugin.compose' version "2.0.0"
-    id 'org.jetbrains.kotlin.plugin.parcelize' version "2.0.0"
-    id 'org.jetbrains.kotlin.plugin.serialization' version "2.0.0"
-    id "com.google.devtools.ksp" version "2.0.0-1.0.22"
+    id 'com.android.application' version "8.6.0"
+    id 'com.android.library' version "8.6.0" apply false
+    id 'com.android.test' version '8.6.0' apply false
+    id 'androidx.baselineprofile' version '1.3.0'
+    id 'org.jetbrains.kotlin.android' version "2.0.20"
+    id 'org.jetbrains.kotlin.plugin.compose' version "2.0.20"
+    id 'org.jetbrains.kotlin.plugin.parcelize' version "2.0.20"
+    id 'org.jetbrains.kotlin.plugin.serialization' version "2.0.20"
+    id "com.google.devtools.ksp" version "2.0.20-1.0.25"
     id 'com.google.protobuf' version "0.9.4"
     id 'app.cash.licensee' version "1.11.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
@@ -41,7 +41,7 @@ allprojects {
     }
 
     plugins.withId('com.google.protobuf') {
-        def protocVersion = '4.27.2'
+        def protocVersion = '4.28.1'
         protobuf {
             // Configure the protoc executable
             protoc {
@@ -77,7 +77,7 @@ allprojects {
 
     ext {
         FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
-        daggerVersion = '2.51.1'
+        daggerVersion = '2.52'
 
         addFrameworkJar = { String name ->
             def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
@@ -158,7 +158,6 @@ android {
     buildFeatures {
         aidl true
         buildConfig true
-        compose true
         resValues true
     }
 
@@ -294,6 +293,11 @@ androidComponents {
     }
 }
 
+composeCompiler {
+    stabilityConfigurationFile = layout.projectDirectory.file("compose_compiler_config.conf")
+    reportsDestination = layout.buildDirectory.dir("compose_build_reports")
+}
+
 addFrameworkJar('framework-14.jar')
 
 dependencies {
@@ -325,7 +329,7 @@ dependencies {
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-14.jar')
     withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-14.jar')
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.2'
 
     implementation 'androidx.profileinstaller:profileinstaller:1.3.1'
     baselineProfile projects.baselineProfile
@@ -335,12 +339,11 @@ dependencies {
     implementation "androidx.preference:preference-ktx:1.2.1"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1'
-    implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7"
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.2'
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
 
-    implementation platform("androidx.compose:compose-bom:2024.06.00")
+    implementation platform("androidx.compose:compose-bom:2024.09.01")
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.ui:ui-util"
     debugImplementation "androidx.compose.ui:ui-tooling"
@@ -350,22 +353,22 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended"
     implementation "androidx.compose.material:material"
     implementation "androidx.compose.runtime:runtime-livedata"
-    implementation 'androidx.compose.material3:material3:1.3.0-beta04'
-    implementation 'androidx.compose.material3:material3-window-size-class:1.3.0-beta04'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.material3:material3-window-size-class'
+    implementation "androidx.activity:activity-compose:1.9.2"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5"
+    implementation "androidx.navigation:navigation-compose:2.8.0"
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
-    implementation "androidx.activity:activity-compose:1.9.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3"
-    implementation "androidx.navigation:navigation-compose:2.8.0-beta04"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
-    def accompanistVersion = '0.34.0'
+    def accompanistVersion = '0.36.0'
     implementation "com.google.accompanist:accompanist-adaptive:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-permissions:$accompanistVersion"
     implementation "com.google.android.material:material:1.12.0"
     implementation "io.github.fornewid:material-motion-compose-core:1.2.1"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
-    implementation 'io.coil-kt:coil-compose:2.6.0'
+    implementation 'io.coil-kt:coil-compose:2.7.0'
     implementation 'me.xdrop:fuzzywuzzy:1.4.0'
     def optoVersion = "1.0.18"
     implementation "com.patrykmichalik.opto:domain:$optoVersion"
@@ -386,12 +389,17 @@ dependencies {
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
 
-    implementation 'com.airbnb.android:lottie:6.4.1'
+    implementation 'com.airbnb.android:lottie:6.5.2'
+
+    // Compose drag and drop library
+    implementation 'sh.calvin.reorderable:reorderable:2.3.2'
 
     // Smartspacer
     implementation('com.kieronquinn.smartspacer:sdk-client:1.0.11') {
         exclude group: "com.github.skydoves", module: "balloon"
     }
+
+    implementation("com.github.android:renderscript-intrinsics-replacement-toolkit:b6363490c3")
 }
 
 ksp {
@@ -409,7 +417,7 @@ spotless {
     kotlin {
         target("lawnchair/src/**/*.kt")
         ktlint().customRuleSets([
-            "io.nlopez.compose.rules:ktlint:0.4.5",
+            "io.nlopez.compose.rules:ktlint:0.4.12",
         ]).editorConfigOverride([
             "ktlint_compose_compositionlocal-allowlist": "disabled",
         ])

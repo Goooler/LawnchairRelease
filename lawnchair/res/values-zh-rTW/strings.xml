@@ -97,7 +97,7 @@
     <string name="quickstep_label">最近使用的應用程式</string>
     <string name="quickstep_description">Clear All button, corner radius</string>
     <string name="about_label">關於</string>
-    <string name="app_info_drop_target_label">App info</string>
+    <string name="app_info_drop_target_label">應用程式資訊</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
     <string name="experimental_features_label">Experimental features</string>
     <!-- Experimental features -->
@@ -107,7 +107,7 @@
     <string name="smartspace_calendar_description">允許顯示非公曆的日期</string>
     <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
     <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
-    <string name="always_reload_icons_label">Always reload icons</string>
+    <string name="always_reload_icons_label">永遠重新載入圖示</string>
     <string name="always_reload_icons_description">避免使用圖示套件中已快取的圖示</string>
     <string name="recents_lock_unlock">Lock/unlock</string>
     <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
@@ -142,6 +142,7 @@
     <string name="transparent_background_icons_description">在套用主題色的圖示上使用透明背景</string>
     <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
     <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
+    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
     <string name="background_lightness_label">Background lightness</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
     <string name="reset_custom_icons">Reset custom icons</string>
@@ -160,6 +161,7 @@
     <string name="icon_shape_egg">蛋形</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">八角形</string>
+    <string name="icon_shape_hexagon">Hexagon</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Rounded square</string>
     <string name="icon_shape_sharp_square">Sharp square</string>
@@ -184,7 +186,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Icon pack</string>
     <string name="themed_icon_pack">Themed icon source</string>
-    <string name="system_icons">System icons</string>
+    <string name="system_icons">系統圖示</string>
     <string name="themed_icon_title">Themed icons</string>
     <string name="themed_icons_off_label">關閉</string>
     <string name="themed_icons_home_label">Home screen</string>
@@ -275,9 +277,13 @@
     <string name="smartspace_weather">天氣</string>
     <string name="smartspace_battery_status">Battery status</string>
     <string name="smartspace_now_playing">聽聲辨曲</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tap to set up</string>
-    <string name="event_provider_missing_notification_dots">如要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，請啟用通知圓點。</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Show on home screen</string>
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
@@ -304,6 +310,7 @@
     <string name="support_and_pr">支援 &amp; 公關</string>
     <string name="acknowledgements">銘謝</string>
     <string name="translate">翻譯</string>
+    <string name="donate">Donate</string>
     <!--
 
     Backup and restore
@@ -343,7 +350,7 @@
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
     <string name="dt2s_admin_warning">將停用「輕觸兩下來關閉螢幕」</string>
     <string name="dt2s_a11y_hint_title">Turn on accessibility service</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_warning_open_settings">Open settings</string>
     <!--
 
@@ -367,6 +374,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Home screen rotation</string>
     <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
+    <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
+    <string name="wallpaper_background_blur">Blur intensity</string>
+    <string name="wallpaper_background_blur_factor">Factor threshold</string>
     <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
     <string name="minus_one_enable">Show feed</string>
     <string name="minus_one_unavailable">尚未安裝資訊頁提供服務。</string>
@@ -387,8 +397,8 @@
     <string name="show_material_u_popup_description">Use Material You\'s bouncy and slightly consolidated pop-up style</string>
     <string name="popup_menu">Pop-up menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Show lock button</string>
-    <string name="show_system_settings_entry">Show system settings entry</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit button</string>
+    <string name="show_system_settings_entry">Show system settings button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
     <string name="status_bar_label">Status bar</string>
     <string name="show_status_bar">Show status bar</string>
     <string name="dark_status_bar_label">Dark status bar</string>
@@ -407,6 +417,9 @@
     <string name="hotseat_mode_label">Search bar widget</string>
     <string name="hotseat_mode_disabled">停用</string>
     <string name="hotseat_mode_google_search">Google Search bar</string>
+    <string name="qsb_hotseat_background_transparency">Background opacity</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">圓角大小</string>
     <string name="apply_accent_color_label">Apply accent color</string>
     <string name="search_provider">Search provider</string>
@@ -439,7 +452,8 @@
         <item quantity="other">%1$d apps</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Icon background opacity</string>
+    <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
+    <string name="folder_bg_opacity_label">Folder background opacity</string>
     <string name="folder_preview_bg_color_label">Icon background color</string>
     <string name="max_folder_columns">Maximum folder columns</string>
     <string name="max_folder_rows">Maximum folder rows</string>
@@ -509,18 +523,19 @@
     <string name="search_pref_result_contacts_description">聯絡人與其他項目</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
-    <string name="max_people_result_count_title">Maximum number of people in search results</string>
-    <string name="max_file_result_count_title">Maximum number of files in search results</string>
-    <string name="max_settings_entry_result_count_title">Maximum number of settings entries in search results</string>
-    <string name="max_recent_result_count_title">Maximum number of history entries in search results</string>
-    <string name="max_suggestion_result_count_title">Maximum number of suggestions in search results</string>
+    <string name="max_apps_result_count_title">Maximum number of apps</string>
+    <string name="max_people_result_count_title">Maximum number of people</string>
+    <string name="max_file_result_count_title">Maximum number of files</string>
+    <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
+    <string name="max_recent_result_count_title">Maximum items for search history</string>
+    <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
     <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
     <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
     <string name="grant_requested_permissions">Grant permissions</string>
-    <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
     <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
     <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
+    <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
+    <string name="allapps_match_qsb_style_description">Clicking the dock search bar will now open the app drawer search UI</string>
 </resources>

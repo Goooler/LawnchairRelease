@@ -51,7 +51,6 @@ import app.lawnchair.ui.preferences.components.notificationDotsEnabled
 import app.lawnchair.ui.preferences.components.notificationServiceEnabled
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import kotlinx.collections.immutable.toPersistentList
 
 object GeneralRoutes {
     const val ICON_PACK = "iconPack"
@@ -156,6 +155,10 @@ fun GeneralPreferences() {
                 label = stringResource(id = R.string.auto_adaptive_icons_label),
                 description = stringResource(id = R.string.auto_adaptive_icons_description),
             )
+            SwitchPreference(
+                adapter = prefs.shadowBGIcons.getAdapter(),
+                label = stringResource(id = R.string.shadow_bg_icons_label),
+            )
 
             ExpandAndShrink(visible = wrapAdaptiveIcons.state.value) {
                 SliderPreference(
@@ -216,7 +219,7 @@ private fun ColorStylePreference(
                 value = mode,
                 label = { stringResource(id = mode.nameResourceId) },
             )
-        }.toPersistentList()
+        }
     }
 
     ListPreference(

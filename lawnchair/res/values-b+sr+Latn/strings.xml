@@ -142,6 +142,7 @@
     <string name="transparent_background_icons_description">Koristi prozirnu pozadinu na tematskim ikonama</string>
     <string name="auto_adaptive_icons_label">Prilagodljive ikone</string>
     <string name="auto_adaptive_icons_description">Za sve neprilagodljive ikone</string>
+    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
     <string name="background_lightness_label">Osvetljenost pozadine</string>
     <string name="adaptive_icon_background_description">Bela pozadina pri 100% osvetljenosti</string>
     <string name="reset_custom_icons">Resetuj prilagođene ikone</string>
@@ -160,6 +161,7 @@
     <string name="icon_shape_egg">Jaje</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Osmougao</string>
+    <string name="icon_shape_hexagon">Hexagon</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Zaobljeni kvadrat</string>
     <string name="icon_shape_sharp_square">Oštri kvadrat</string>
@@ -275,9 +277,13 @@
     <string name="smartspace_weather">Vremenska prognoza</string>
     <string name="smartspace_battery_status">Status baterije</string>
     <string name="smartspace_now_playing">Reprodukuje se</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Dodirnite za podešavanje</string>
-    <string name="event_provider_missing_notification_dots">Da biste koristili <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, omogućite tačke za obaveštenja.</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Prikaži na početnom ekranu</string>
     <string name="smartspace_widget_toggle_description">„Kratak pregled” možete da dodate ručno postavljanjem vidžeta „Lawnchair”</string>
@@ -304,6 +310,7 @@
     <string name="support_and_pr">Podrška i odnosi sa javnošću</string>
     <string name="acknowledgements">Priznanja</string>
     <string name="translate">Prevod</string>
+    <string name="donate">Donate</string>
     <!--
 
     Backup and restore
@@ -343,7 +350,7 @@
     <string name="dt2s_admin_hint">Da biste koristili funkciju „Dodirnite dvaput za stanje spavanja”, podesite Lawnchair kao administrator uređaja. U podešavanjima dodirnite „Aktiviraj ovu aplikaciju za administratora uređaja”.</string>
     <string name="dt2s_admin_warning">Funkcija „Dodirnite dvaput za stanje spavanja” će biti isključena</string>
     <string name="dt2s_a11y_hint_title">Uključi uslugu pristupačnosti</string>
-    <string name="dt2s_a11y_hint">Da biste koristili funkciju „Dodirnite dvaput za stanje spavanja”, uključite Lawnchairovu uslugu pristupačnosti. U podešavanjima izaberite Lawnchair i dodirnite „Koristi Lawnchair”.</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_warning_open_settings">Otvori podešavanja</string>
     <!--
 
@@ -367,6 +374,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotacija početnog ekrana</string>
     <string name="home_screen_rotation_description">Dozvolite rotaciju početnog ekrana kada se uređaj rotira</string>
+    <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
+    <string name="wallpaper_background_blur">Blur intensity</string>
+    <string name="wallpaper_background_blur_factor">Factor threshold</string>
     <string name="auto_add_shortcuts_label">Dodaj nove aplikacije na početni ekran</string>
     <string name="minus_one_enable">Prikaži fid</string>
     <string name="minus_one_unavailable">Nijedna aplikacija za fid nije instalirana</string>
@@ -387,8 +397,8 @@
     <string name="show_material_u_popup_description">Koristite animirane i kompaktnije iskačuće prozore u skladu sa dizajnom Material You</string>
     <string name="popup_menu">Iskačući meni</string>
     <string name="home_screen_lock_toggle_from_home_popup">Prikaži dugme za zaključavanje</string>
-    <string name="show_system_settings_entry">Prikaži sistemsko podešavanje</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Prikaži dugme „Uredi”</string>
+    <string name="show_system_settings_entry">Show system settings button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
     <string name="status_bar_label">Statusna traka</string>
     <string name="show_status_bar">Prikaži statusnu traku</string>
     <string name="dark_status_bar_label">Tamna statusna traka</string>
@@ -407,6 +417,9 @@
     <string name="hotseat_mode_label">Vidžet trake za pretragu</string>
     <string name="hotseat_mode_disabled">Onemogućeno</string>
     <string name="hotseat_mode_google_search">Google traka za pretragu</string>
+    <string name="qsb_hotseat_background_transparency">Neprozirnost pozadine</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">Zaobljenost uglova</string>
     <string name="apply_accent_color_label">Primeni boju za naglašavanje</string>
     <string name="search_provider">Pretraživač</string>
@@ -441,7 +454,8 @@
         <item quantity="other">%1$d aplikacija</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Neprozirnost pozadine ikona</string>
+    <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
+    <string name="folder_bg_opacity_label">Folder background opacity</string>
     <string name="folder_preview_bg_color_label">Pozadinska boja ikone</string>
     <string name="max_folder_columns">Maksimalan broj kolona u folderu</string>
     <string name="max_folder_rows">Maksimalan broj redova u folderu</string>
@@ -511,18 +525,19 @@
     <string name="search_pref_result_contacts_description">Kontakti i drugo</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maksimalan broj aplikacija u rezultatima pretrage</string>
-    <string name="max_people_result_count_title">Maksimalan broj kontakata u rezultatima pretrage</string>
-    <string name="max_file_result_count_title">Maksimalan broj fajlova u rezultatima pretrage</string>
-    <string name="max_settings_entry_result_count_title">Maksimalan broj podešavanja u rezultatima pretrage</string>
-    <string name="max_recent_result_count_title">Maksimalan broj zapisa u istoriji u rezultatima pretrage</string>
-    <string name="max_suggestion_result_count_title">Maksimalan broj veb-predloga u rezultatima pretrage</string>
+    <string name="max_apps_result_count_title">Maximum number of apps</string>
+    <string name="max_people_result_count_title">Maximum number of people</string>
+    <string name="max_file_result_count_title">Maximum number of files</string>
+    <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
+    <string name="max_recent_result_count_title">Maximum items for search history</string>
+    <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
     <string name="max_web_suggestion_delay">Maksimalno kašnjenje veb-predloga</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">Da biste pretraživali kontakte, dodelite Lawnchairu dozvole Kontakti i Telefon</string>
     <string name="warn_files_permission_content">Da biste pretraživali fajlove, dodelite Lawnchairu pristup memoriji</string>
     <string name="grant_requested_permissions">Dodeli dozvole</string>
-    <string name="hotseat_mode_lawnchair_compose">Lawnchair (sastavljeno)</string>
     <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
     <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
+    <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
+    <string name="allapps_match_qsb_style_description">Clicking the dock search bar will now open the app drawer search UI</string>
 </resources>

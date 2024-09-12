@@ -8,7 +8,7 @@ import androidx.core.util.contains
 import app.lawnchair.allapps.views.SearchItemDecorator
 import app.lawnchair.allapps.views.SearchResultView
 import app.lawnchair.search.adapter.SearchAdapterItem
-import app.lawnchair.search.adapter.SearchResultActionCallBack
+import app.lawnchair.search.model.SearchResultActionCallBack
 import com.android.app.search.LayoutType
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
@@ -70,7 +70,7 @@ class LawnchairSearchAdapterProvider(
     ): BaseAllAppsAdapter.ViewHolder {
         val view = layoutInflater.inflate(layoutIdMap[viewType], parent, false)
         val grid: DeviceProfile = mLauncher.deviceProfile
-        val horizontalMargin = if (grid.isTablet) grid.allAppsPadding.left + grid.allAppsPadding.right + 48 else grid.allAppsPadding.left + grid.allAppsPadding.right
+        val horizontalMargin = grid.allAppsPadding.left + grid.allAppsPadding.right
 
         if (viewType != SEARCH_RESULT_ICON) {
             val layoutParams = ViewGroup.MarginLayoutParams(view.layoutParams)
