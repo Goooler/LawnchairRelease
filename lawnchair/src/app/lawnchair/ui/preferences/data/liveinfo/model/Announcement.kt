@@ -16,6 +16,7 @@ import androidx.compose.material.icons.rounded.Sos
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.Support
 import androidx.compose.material.icons.rounded.Warning
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.android.launcher3.BuildConfig
 import kotlinx.serialization.Serializable
 
@@ -31,23 +32,24 @@ data class Announcement(
 
     val id: AnnouncementId get() = text to url
 
-    fun getIcon() = when (icon) {
-        "bug-report" -> Icons.Rounded.BugReport
-        "check-circle" -> Icons.Rounded.CheckCircle
-        "error" -> Icons.Rounded.Error
-        "favorite" -> Icons.Rounded.Favorite
-        "feedback" -> Icons.Rounded.Feedback
-        "forum" -> Icons.Rounded.Forum
-        "hub" -> Icons.Rounded.Hub
-        "loyalty" -> Icons.Rounded.Loyalty
-        "priority-high" -> Icons.Rounded.PriorityHigh
-        "privacy-tip" -> Icons.Rounded.PrivacyTip
-        "sos" -> Icons.Rounded.Sos
-        "star" -> Icons.Rounded.Star
-        "support" -> Icons.Rounded.Support
-        "warning" -> Icons.Rounded.Warning
-        else -> Icons.Rounded.NewReleases
-    }
+    val iconVector: ImageVector
+        get() = when (icon) {
+            "bug-report" -> Icons.Rounded.BugReport
+            "check-circle" -> Icons.Rounded.CheckCircle
+            "error" -> Icons.Rounded.Error
+            "favorite" -> Icons.Rounded.Favorite
+            "feedback" -> Icons.Rounded.Feedback
+            "forum" -> Icons.Rounded.Forum
+            "hub" -> Icons.Rounded.Hub
+            "loyalty" -> Icons.Rounded.Loyalty
+            "priority-high" -> Icons.Rounded.PriorityHigh
+            "privacy-tip" -> Icons.Rounded.PrivacyTip
+            "sos" -> Icons.Rounded.Sos
+            "star" -> Icons.Rounded.Star
+            "support" -> Icons.Rounded.Support
+            "warning" -> Icons.Rounded.Warning
+            else -> Icons.Rounded.NewReleases
+        }
 
     val shouldBeVisible
         get(): Boolean {
