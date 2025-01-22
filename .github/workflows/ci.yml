@@ -26,7 +26,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
@@ -48,7 +48,7 @@ jobs:
             build/outputs/mapping/lawnWithQuickstepRelease/mapping.txt
 
   check-style:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -61,7 +61,7 @@ jobs:
       - run: ./gradlew spotlessCheck
 
   nightly-release:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     if: github.repository_owner == 'Goooler' && github.ref == 'refs/heads/trunk' && github.event_name == 'push'
     needs: build
     permissions:
