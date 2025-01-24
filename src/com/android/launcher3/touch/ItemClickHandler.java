@@ -127,11 +127,6 @@ public class ItemClickHandler {
             }
         } else if (tag instanceof ItemClickProxy) {
             ((ItemClickProxy) tag).onItemClicked(v);
-        } else if (tag instanceof PendingAddShortcutInfo) {
-            CharSequence msg = Utilities.wrapForTts(
-                    launcher.getText(R.string.long_press_shortcut_to_add),
-                    launcher.getString(R.string.long_accessible_way_to_add_shortcut));
-            Snackbar.show(launcher, msg, null);
         } else if (tag instanceof PendingAddWidgetInfo) {
             if (DEBUG) {
                 String targetPackage = ((PendingAddWidgetInfo) tag).getTargetPackage();

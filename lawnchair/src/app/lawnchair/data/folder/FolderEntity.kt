@@ -3,6 +3,7 @@
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "Folders")
@@ -25,6 +26,7 @@ data class FolderInfoEntity(
             onUpdate = ForeignKey.CASCADE,
         ),
     ],
+    indices = [Index(value = ["folderId"])],
 )
 data class FolderItemEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,

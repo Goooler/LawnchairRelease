@@ -103,9 +103,7 @@ fun DrawerFolderPreferences(
         viewModel.setAction(Action.DEFAULT)
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.loadFolders()
-    }
+    viewModel.refreshFolders()
 
     LoadingScreen(obj = folders, modifier = modifier.fillMaxWidth()) { items ->
         PreferenceLayoutLazyColumn(
@@ -221,7 +219,7 @@ fun HandleActions(
                 viewModel.updateFolderInfo(this, false)
             }
             bottomSheetHandler.hide()
-            reloadHelper.recreate()
+            reloadHelper.reloadGrid()
             viewModel.setAction(Action.SETTLE)
             loggedAction = "Updated folder: ${folderInfoHolder?.title}"
         }

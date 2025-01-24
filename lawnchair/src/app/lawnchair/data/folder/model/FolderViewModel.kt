@@ -8,12 +8,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.data.folder.service.FolderService
 import app.lawnchair.ui.preferences.destinations.Action
+import com.android.launcher3.R
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.FolderInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class FolderViewModel(context: Context) : ViewModel() {
 
@@ -22,7 +25,7 @@ class FolderViewModel(context: Context) : ViewModel() {
     private val _folders = MutableStateFlow<List<FolderInfo>>(emptyList())
     val folders: StateFlow<List<FolderInfo>> = _folders.asStateFlow()
 
-    private val _currentTitle = MutableStateFlow("My Folder")
+    private val _currentTitle = MutableStateFlow(context.resources.getString(R.string.my_folder_label))
     val currentTitle: StateFlow<String> = _currentTitle.asStateFlow()
 
     private val _action = MutableStateFlow(Action.DEFAULT)
@@ -31,13 +34,20 @@ class FolderViewModel(context: Context) : ViewModel() {
     private val _foldersMutable = MutableLiveData<List<FolderInfo>>()
     val foldersMutable: LiveData<List<FolderInfo>> = _foldersMutable
 
+    private val _items = MutableStateFlow<Set<String>>(setOf())
+    val items: StateFlow<Set<String>> = _items.asStateFlow()
+
     private val _folderInfo = MutableStateFlow<FolderInfo?>(null)
     val folderInfo = _folderInfo.asStateFlow()
     private var tempTitle: String = ""
 
+    private val mutex = Mutex()
+
     init {
         viewModelScope.launch {
-            loadFolders()
+            mutex.withLock {
+                loadFolders()
+            }
         }
     }
 
@@ -50,7 +60,16 @@ class FolderViewModel(context: Context) : ViewModel() {
 
     fun refreshFolders() {
         viewModelScope.launch {
-            loadFolders()
+            mutex.withLock {
+                loadFolders()
+            }
+        }
+    }
+
+    fun setItems(id: Int) {
+        viewModelScope.launch {
+            val items = repository.getItems(id)
+            _items.value = items
         }
     }
 
@@ -72,22 +91,22 @@ class FolderViewModel(context: Context) : ViewModel() {
     fun updateFolderInfo(folderInfo: FolderInfo, hide: Boolean) {
         viewModelScope.launch {
             repository.updateFolderInfo(folderInfo, hide)
-            loadFolders()
         }
+        refreshFolders()
     }
 
     fun saveFolder(folderInfo: FolderInfo) {
         viewModelScope.launch {
             repository.saveFolderInfo(folderInfo)
-            loadFolders()
         }
+        refreshFolders()
     }
 
     fun deleteFolderInfo(id: Int) {
         viewModelScope.launch {
             repository.deleteFolderInfo(id)
-            loadFolders()
         }
+        refreshFolders()
     }
 
     fun updateFolderWithItems(id: Int, title: String, appInfos: List<AppInfo>) {

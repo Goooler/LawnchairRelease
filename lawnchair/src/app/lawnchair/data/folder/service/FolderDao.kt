@@ -25,6 +25,10 @@ interface FolderDao {
     @Transaction
     suspend fun getFolderWithItems(folderId: Int): FolderWithItems?
 
+    @Query("SELECT * FROM FolderItems WHERE folderId IS NOT :folderId")
+    @Transaction
+    suspend fun getItems(folderId: Int): List<FolderItemEntity>
+
     @Query("SELECT * FROM Folders")
     fun getAllFolders(): Flow<List<FolderInfoEntity>>
 
