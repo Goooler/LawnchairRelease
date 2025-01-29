@@ -6,9 +6,9 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
+import androidx.viewpager.widget.ViewPager
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.launcher
-import app.lawnchair.launcherNullable
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.subscribeBlocking
 import app.lawnchair.ui.preferences.PreferenceActivity
@@ -27,6 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
 class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView(context, attrs) {
+    private lateinit var viewPager: ViewPager
     private val prefs2 = PreferenceManager2.getInstance(context)
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
     private var targetCount = 5
@@ -69,11 +70,10 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
         }
     }
 
-    override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
-        val ctx = LawnchairLauncher.instance?.launcherNullable
-        val dp = ctx?.deviceProfile
-        val leftPadding = dp?.widgetPadding?.left ?: (left + 16)
-        super.setPadding(leftPadding, top, right, bottom)
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        viewPager = findViewById<ViewPager>(SmartspacerR.id.smartspace_card_pager)!!
+        viewPager.setLayoutParams(LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.UNSPECIFIED_GRAVITY))
     }
 
     override val config = SmartspaceConfig(

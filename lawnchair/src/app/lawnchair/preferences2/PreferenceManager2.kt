@@ -374,19 +374,19 @@ class PreferenceManager2 private constructor(private val context: Context) :
     val homeIconSizeFactor = preference(
         key = floatPreferencesKey(name = "home_icon_size_factor"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_home_icon_size_factor),
-        onSet = { reloadHelper.reloadIcons() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val folderPreviewBackgroundOpacity = preference(
         key = floatPreferencesKey(name = "folder_preview_background_opacity"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_folder_preview_background_opacity),
-        onSet = { reloadHelper.reloadIcons() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val folderBackgroundOpacity = preference(
         key = floatPreferencesKey(name = "folder_background_opacity"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_folder_background_opacity),
-        onSet = { reloadHelper.reloadIcons() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val showIconLabelsOnHomeScreen = preference(
@@ -404,7 +404,7 @@ class PreferenceManager2 private constructor(private val context: Context) :
     val drawerIconSizeFactor = preference(
         key = floatPreferencesKey(name = "drawer_icon_size_factor"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_drawer_icon_size_factor),
-        onSet = { reloadHelper.reloadIcons() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val showIconLabelsInDrawer = preference(
