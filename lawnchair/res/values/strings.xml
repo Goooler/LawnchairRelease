@@ -612,6 +612,7 @@
     <string name="search_provider_youtube" translatable="false">YouTube</string>
     <string name="search_provider_pixel_search" translatable="false">Pixel Search</string>
     <string name="search_provider_yandex" translatable="false">Yandex</string>
+    <string name="search_provider_fennec" translatable="false">Fennec</string>
     <string name="search_provider_firefox" translatable="false">Firefox</string>
     <string name="search_provider_iceraven" translatable="false">Iceraven</string>
     <string name="search_provider_mull" translatable="false">Mull</string>

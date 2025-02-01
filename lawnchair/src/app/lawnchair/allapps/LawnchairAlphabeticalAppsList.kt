@@ -8,10 +8,10 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.data.factory.ViewModelFactory
 import app.lawnchair.data.folder.model.FolderViewModel
+import app.lawnchair.flowerpot.Flowerpot
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.util.categorizeApps
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener
 import com.android.launcher3.allapps.AllAppsStore
 import com.android.launcher3.allapps.AlphabeticalAppsList
@@ -42,6 +42,7 @@ class LawnchairAlphabeticalAppsList<T>(
     private var viewModel: FolderViewModel
     private var folderList = mutableListOf<FolderInfo>()
     private val filteredList = mutableListOf<AppInfo>()
+    val potsManager = Flowerpot.Manager.getInstance(context)
 
     init {
         context.launcher.deviceProfile.inv.addOnChangeListener(this)
@@ -82,7 +83,7 @@ class LawnchairAlphabeticalAppsList<T>(
         var position = startPosition
 
         if (!drawerListDefault) {
-            val categorizedApps = categorizeApps(context, appList)
+            val categorizedApps = potsManager.categorizeApps(appList)
             categorizedApps.forEach { (category, apps) ->
                 if (apps.size == 1) {
                     mAdapterItems.add(AdapterItem.asApp(apps.first()))

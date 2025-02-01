@@ -132,6 +132,7 @@ sealed class QsbSearchProvider(
             Bing,
             Brave,
             Yandex,
+            Fennec,
             Firefox,
             Iceraven,
             Startpage,
