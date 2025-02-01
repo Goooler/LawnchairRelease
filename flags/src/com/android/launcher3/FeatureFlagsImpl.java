@@ -121,7 +121,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
             enableTaskbarPinning =
                     properties.getBoolean(Flags.FLAG_ENABLE_TASKBAR_PINNING, true);
             enableTwoPaneLauncherSettings =
-                    properties.getBoolean(Flags.FLAG_ENABLE_TWO_PANE_LAUNCHER_SETTINGS, false);
+                    properties.getBoolean(Flags.FLAG_ENABLE_TWO_PANE_LAUNCHER_SETTINGS, true);
             enableTwolineAllapps =
                     properties.getBoolean(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS, false);
             enableTwolineToggle =

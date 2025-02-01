@@ -405,6 +405,8 @@ dependencies {
     }
 
     implementation 'io.github.hokofly:hoko-blur:1.5.3'
+    
+    implementation "androidx.window:window:1.3.0"
 }
 
 ksp {

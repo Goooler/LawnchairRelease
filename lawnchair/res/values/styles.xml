@@ -210,4 +210,17 @@
         <item name="keyShadowOffsetX">@dimen/key_text_shadow_dx</item>
         <item name="keyShadowOffsetY">@dimen/key_text_shadow_dy</item>
     </style>
+
+    <style name="AllAppsStyle4x5Fold" parent="@style/AllAppsStyleDefault">
+        <item name="horizontalPadding">32dp</item>
+    </style>
+
+    <style name="CellStyle4x5Fold" parent="@style/CellStyleDefault">
+        <item name="iconDrawablePadding">12dp</item>
+    </style>
+
+    <style name="Folder4x5FoldStyle" parent="@style/FolderStyleDefault">
+        <item name="folderCellHeight">83dp</item>
+        <item name="folderCellWidth">58dp</item>
+    </style>
 </resources>
