@@ -62,6 +62,7 @@ import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.util.Log;
 import android.util.Property;
 import android.util.TypedValue;
@@ -169,15 +170,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         }
     };
 
-    public static final Property<BubbleTextView, Float> TEXT_ALPHA_PROPERTY
-            = new Property<BubbleTextView, Float>(Float.class, "textAlpha") {
+    public static final FloatProperty<BubbleTextView> TEXT_ALPHA_PROPERTY
+            = new FloatProperty<BubbleTextView>("textAlpha") {
         @Override
         public Float get(BubbleTextView bubbleTextView) {
             return bubbleTextView.mTextAlpha;
         }
 
         @Override
-        public void set(BubbleTextView bubbleTextView, Float alpha) {
+        public void setValue(BubbleTextView bubbleTextView, float alpha) {
             bubbleTextView.setTextAlpha(alpha);
         }
     };
@@ -567,7 +568,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         if (mSkipUserBadge) {
             flags |= FLAG_SKIP_USER_BADGE;
         }
-        FastBitmapDrawable iconDrawable = info.newIcon(getContext(), flags);
+        // LC-Note: Open drawer-folder children must use the same preference as their preview.
+        FastBitmapDrawable iconDrawable = mDisplay == DISPLAY_DRAWER_FOLDER
+                ? info.newIcon(getContext(), flags, shouldUseTheme())
+                : info.newIcon(getContext(), flags);
         mDotParams.appColor = iconDrawable.getIconColor();
         mDotParams.dotColor = Themes.getAttrColor(getContext(), R.attr.notificationDotColor);
         if (isPrivateSpaceIcon) {
